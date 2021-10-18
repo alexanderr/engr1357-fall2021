@@ -83,7 +83,7 @@ struct Robot {
   void loop() {
     checkKeypad();
     ping();
-    if((m_distance1 < COLLISION_THRESHOLD) && !isTurning()) { // obstacle
+    if((m_distance1 < COLLISION_THRESHOLD) && !isTurning() && isMoving()) { // obstacle
       m_controller.setState(TurnLeftState::getInstance());
     }
     else if(isTurning()){
