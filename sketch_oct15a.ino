@@ -1,12 +1,12 @@
 #include "Robot.h"
 
-Robot robot;
+Robot* robot;
 
 void setup() {
+  robot = new Robot();
   Serial.begin(9600);
 }
 
 void loop() {
-  robot.loop();
-  delay(50);
+  robot->loop();
 }

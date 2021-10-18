@@ -89,6 +89,8 @@ struct Robot {
     else if(isTurning()){
       m_controller.setState(ForwardState::getInstance());
     }
+
+    delay(50);
   }
   
 };
