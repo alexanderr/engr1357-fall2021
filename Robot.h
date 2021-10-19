@@ -11,11 +11,7 @@
 #define COLLISION_THRESHOLD 30.0
 
 namespace Pins {
-  enum {
-    PING2_TRIG = 2,
-    PING2_ECHO = 4,
-
-    
+  enum {    
     M_FRONTRIGHT = 9,
     M_BACKRIGHT = 5,
 
@@ -27,6 +23,8 @@ namespace Pins {
     PING1_ECHO = 29,
     PING1_TRIG = 27,
 
+    PING2_TRIG = 31,
+    PING2_ECHO = 33,
   };
 };
 
@@ -43,20 +41,20 @@ struct Robot {
   Keypad* m_keypad;
   LiquidCrystal_I2C* m_lcd;
   
-  PingSensor m_ping1;
-  PingSensor m_ping2;
+  PingSensor m_pingL;
+  PingSensor m_pingR;
   
   MovementFSM m_controller;
-  float m_distance1;
-  float m_distance2;
+  float m_distanceL;
+  float m_distanceR;
 
   Robot() {
     m_lcd = new LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
     m_lcd->begin(16, 2); // 16x2 lcd
     m_lcd->backlight();
     m_keypad = new Keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
-    m_ping1 = PingSensor(Pins::PING1_TRIG, Pins::PING1_ECHO);
-    m_ping2 = PingSensor(Pins::PING2_TRIG, Pins::PING2_ECHO);
+    m_pingL = PingSensor(Pins::PING1_TRIG, Pins::PING1_ECHO);
+    m_pingR = PingSensor(Pins::PING2_TRIG, Pins::PING2_ECHO);
     m_controller = MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT);
   };
 
@@ -64,8 +62,20 @@ struct Robot {
     return (m_controller.currentState == &TurnLeftState::getInstance()) || (m_controller.currentState == &TurnRightState::getInstance());
   }
 
+  bool isTurningLeft() {
+    m_controller.currentState == &TurnLeftState::getInstance();
+  }
+
+  bool isTurningRight() {
+    m_controller.currentState == &TurnRightState::getInstance();
+  }
+
   bool isMoving() {
     return m_controller.currentState != &StationaryState::getInstance();
+  }
+
+  bool isReversing() {
+    return m_controller.currentState == &ReverseState::getInstance();
   }
 
   void checkKeypad() {
@@ -77,19 +87,32 @@ struct Robot {
   }
 
   void ping() {
-    m_distance1 = m_ping1.getDistance();
+    m_distanceL = m_pingL.getDistance();
+    m_distanceR = m_pingR.getDistance();
   }
 
   void loop() {
     checkKeypad();
     ping();
-    if((m_distance1 < COLLISION_THRESHOLD) && !isTurning() && isMoving()) { // obstacle
-      m_controller.setState(TurnLeftState::getInstance());
-    }
-    else if(isTurning()){
-      m_controller.setState(ForwardState::getInstance());
-    }
 
+    bool leftCollision = m_distanceL < COLLISION_THRESHOLD;
+    bool rightCollision = m_distanceR < COLLISION_THRESHOLD;
+
+    if(isMoving()){
+      if(leftCollision && rightCollision){
+        m_controller.setState(ReverseState::getInstance());
+      }
+      else if(leftCollision){
+        m_controller.setState(TurnRightState::getInstance());
+      }
+      else if(rightCollision){
+        m_controller.setState(TurnLeftState::getInstance());
+      }
+      else if(isTurning() || isReversing()){ // no collision
+        m_controller.setState(ForwardState::getInstance());
+      }
+    }
+    
     delay(50);
   }
   

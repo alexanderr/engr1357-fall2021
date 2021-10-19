@@ -19,7 +19,10 @@ public:
   
   void toggle() {
     m_active = not m_active;
-    digitalWrite(m_pin, m_active ? m_speed : 0);
+    if(m_active)
+      enable();
+    else
+      disable();
   }
 
   void enable() {
@@ -31,6 +34,7 @@ public:
   void disable() {
     m_active = false;
     _controller.write(0);
+    _controller.detach();
   }
 
   void setSpeed(byte mspeed){
