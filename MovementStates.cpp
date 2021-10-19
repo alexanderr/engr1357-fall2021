@@ -8,14 +8,14 @@ void StationaryState::enter(MovementFSM* controller) {
 
 
 void TurnLeftState::enter(MovementFSM* controller) {
-  Motor::multiDisable(controller->FR, controller->BR);
-  Motor::multiEnable(controller->FL, controller->BL);
+  Motor::multiDisable(controller->FL, controller->BL);
+  Motor::multiEnable(controller->FR, controller->BR);
 }
 
 
 void TurnRightState::enter(MovementFSM* controller) {
-  Motor::multiDisable(controller->FL, controller->BL);
-  Motor::multiEnable(controller->FR, controller->BR);
+  Motor::multiDisable(controller->FR, controller->BR);
+  Motor::multiEnable(controller->FL, controller->BL);
 }
 
 
