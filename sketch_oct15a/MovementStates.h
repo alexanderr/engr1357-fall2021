@@ -41,6 +41,23 @@ public:
   }
 };
 
+class ReverseTurnLeftState: public MovementState {
+public:
+  void enter(MovementFSM* controller);
+  static MovementState& getInstance() {
+    static ReverseTurnLeftState singleton;
+    return singleton;    
+  }
+};
+
+class ReverseTurnRightState: public MovementState {
+public:
+  void enter(MovementFSM* controller);
+  static MovementState& getInstance() {
+    static ReverseTurnRightState singleton;
+    return singleton;    
+  }
+};
 
 class TurnLeftState: public MovementState {
 public:

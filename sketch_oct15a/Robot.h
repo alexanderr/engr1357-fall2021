@@ -75,7 +75,7 @@ struct Robot {
   }
 
   bool isReversing() {
-    return m_controller.currentState == &ReverseState::getInstance();
+    return m_controller.currentState == &ReverseTurnLeftState::getInstance();
   }
 
   void checkKeypad() {
@@ -91,16 +91,42 @@ struct Robot {
     m_distanceR = m_pingR.getDistance();
   }
 
+  void displayState(){
+    m_lcd->clear();
+    m_lcd->setCursor(0, 0);
+
+    if(isTurningLeft()){
+      m_lcd->print("TurnLeft");
+    }
+    else if(isTurningRight()){
+      m_lcd->print("TurnRight");
+    }
+    else if(isReversing()){
+      m_lcd->print("Reversing");
+    }
+    else if(isMoving()){
+      m_lcd->print("Forward");
+    }
+    else {
+      m_lcd->print("Stationary");
+    }
+  }
+
   void loop() {
+    static unsigned long lastWallTime = 0;
+    
     checkKeypad();
     ping();
 
     bool leftCollision = m_distanceL < COLLISION_THRESHOLD;
     bool rightCollision = m_distanceR < COLLISION_THRESHOLD;
 
+    unsigned long now = millis();
+    
     if(isMoving()){
       if(leftCollision && rightCollision){
-        m_controller.setState(ReverseState::getInstance());
+        m_controller.setState(ReverseTurnLeftState::getInstance());
+        lastWallTime = now;
       }
       else if(leftCollision){
         m_controller.setState(TurnRightState::getInstance());
@@ -112,8 +138,9 @@ struct Robot {
         m_controller.setState(ForwardState::getInstance());
       }
     }
-    
-    delay(50);
+
+    displayState();
+    delay(100);
   }
   
 };

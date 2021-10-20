@@ -39,7 +39,7 @@ public:
 
   void setSpeed(byte mspeed){
     m_speed = mspeed;
-    digitalWrite(m_pin, m_active ? m_speed : 0);
+    _controller.write(m_active ? m_speed : 0);
   }
 
 
