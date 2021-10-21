@@ -4,7 +4,7 @@
 #include <LiquidCrystal_I2C.h>
 #include "MovementFSM.h"
 #include "PingSensor.h"
-#include "Collector.h"
+#include "Chomper.h"
 
 /* constants */
 #define KEYPAD_ROWS 4
@@ -42,7 +42,7 @@ struct Robot {
   Keypad* m_keypad;
   LiquidCrystal_I2C* m_lcd;
 
-  Chomper chomper;
+  Chomper m_chomper;
   PingSensor m_pingL;
   PingSensor m_pingR;
   
@@ -58,7 +58,7 @@ struct Robot {
     m_pingL = PingSensor(Pins::PING1_TRIG, Pins::PING1_ECHO);
     m_pingR = PingSensor(Pins::PING2_TRIG, Pins::PING2_ECHO);
     m_controller = MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT);
-    chomper = Chomper(Pins::SERVO);
+    m_chomper = Chomper(Pins::SERVO);
   };
 
   bool isTurning() {
@@ -86,6 +86,7 @@ struct Robot {
     switch(key){
       case '1': m_controller.setState(ForwardState::getInstance()); break;
       case '*': m_controller.setState(StationaryState::getInstance()); break;
+      case 'A': m_chomper.m_chomping = !m_chomper.m_chomping; break;
     }
   }
 
@@ -125,13 +126,8 @@ struct Robot {
     bool rightCollision = m_distanceR < COLLISION_THRESHOLD;
 
     unsigned long now = millis();
-
-    if (millis() % 10000 > 5000) {
-       m_lcd->clear();
-       m_lcd->setCursor(0, 0);
-      boolean chomping = chomper.toggleChomp();
-       m_lcd->print(chomper.chomper.read());
-    }
+    
+    m_chomper.chomp(now);
     
     if(isMoving()){
       if(leftCollision && rightCollision){
@@ -149,7 +145,7 @@ struct Robot {
       }
     }
 
-    //displayState();
+    displayState();
     delay(100);
   }
   
