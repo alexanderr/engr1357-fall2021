@@ -59,6 +59,7 @@ struct Robot {
     m_pingR = PingSensor(Pins::PING2_TRIG, Pins::PING2_ECHO);
     m_controller = MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT);
     m_chomper = Chomper(Pins::SERVO);
+    
   };
 
   bool isTurning() {
@@ -114,6 +115,9 @@ struct Robot {
     else {
       m_lcd->print("Stationary");
     }
+
+    m_lcd->setCursor(0, 1);
+    m_lcd->print("collecting:" + String(m_chomper.m_chomping));
   }
 
   void loop() {

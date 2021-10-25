@@ -1,7 +1,8 @@
 #include <Servo.h>
 #include "Arduino.h"
 
-#define CHOMP_INTERVAL 1500 // milliseconds
+#define CHOMP_INTERVAL 750 // milliseconds
+#define CHOMP_ANGLE 45
 
 struct Chomper {
   boolean m_chomping;
@@ -27,9 +28,9 @@ struct Chomper {
       int angle = m_chomper.read();
 
       if(angle == 0){
-        m_chomper.write(60);
+        m_chomper.write(CHOMP_ANGLE);
       }
-      else if(angle == 60){
+      else if(angle == CHOMP_ANGLE){
         m_chomper.write(0);
       }
       
