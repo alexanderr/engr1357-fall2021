@@ -5,11 +5,19 @@
 #include "MovementFSM.h"
 #include "PingSensor.h"
 #include "Chomper.h"
+#include "RobotStates.h"
+#include "IRSensor.h"
+
+
 
 /* constants */
 #define KEYPAD_ROWS 4
 #define KEYPAD_COLS 4
 #define COLLISION_THRESHOLD 30.0
+
+#define X_CHAR_GOAL 'K'
+#define Y_CHAR_GOAL 'G'
+#define IR_BUFFER_SIZE 8
 
 namespace Pins {
   enum {    
@@ -26,6 +34,11 @@ namespace Pins {
 
     PING2_TRIG = 31,
     PING2_ECHO = 33,
+
+    INCLINOMETER = 7,
+
+    IR_X = 1,
+    IR_Y = 2,
   };
 };
 
@@ -49,6 +62,10 @@ struct Robot {
   MovementFSM m_controller;
   float m_distanceL;
   float m_distanceR;
+  RobotState* state;
+
+  IRSensor m_irX;
+  IRSensor m_irY;
 
   Robot() {
     m_lcd = new LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
@@ -59,7 +76,11 @@ struct Robot {
     m_pingR = PingSensor(Pins::PING2_TRIG, Pins::PING2_ECHO);
     m_controller = MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT);
     m_chomper = Chomper(Pins::SERVO);
-    
+
+    m_irX = IRSensor(Pins::IR_X);
+    m_irY = IRSensor(Pins::IR_Y);
+
+    pinMode(Pins::INCLINOMETER, INPUT);
   };
 
   bool isTurning() {
@@ -91,6 +112,10 @@ struct Robot {
     }
   }
 
+  int getInclinometerReading() {
+    return analogRead(Pins::INCLINOMETER); // 0 - 1023
+  }
+
   void ping() {
     m_distanceL = m_pingL.getDistance();
     m_distanceR = m_pingR.getDistance();
@@ -120,6 +145,12 @@ struct Robot {
     m_lcd->print("collecting:" + String(m_chomper.m_chomping));
   }
 
+  void setState(RobotState& newState){
+      state->exit(this);  // do stuff before we change state
+      state = &newState;  // actually change states now
+      state->enter(this); // do stuff after we change state
+  }
+
   void loop() {
     static unsigned long lastWallTime = 0;
     
@@ -130,10 +161,10 @@ struct Robot {
     bool rightCollision = m_distanceR < COLLISION_THRESHOLD;
 
     unsigned long now = millis();
-    
-    m_chomper.chomp(now);
-    
-    if(isMoving()){
+
+    // m_chomper.chomp(now);
+
+   if(isMoving()){
       if(leftCollision && rightCollision){
         m_controller.setState(ReverseTurnLeftState::getInstance());
         lastWallTime = now;
@@ -152,11 +183,9 @@ struct Robot {
     displayState();
     delay(100);
   }
+
+  
   
 };
-
-
-
-
 
 #endif
