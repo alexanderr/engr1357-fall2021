@@ -9,10 +9,10 @@ public:
     MovementFSM() = default;
     MovementFSM(byte FL_pin, byte FR_pin, byte BL_pin, byte BR_pin);
 
-    void setState(MovementState& newState);
+    void setMovementState(MovementState& newState);
 
 public:
-    MovementState* currentState;
+    MovementState* movementState;
     Motor FL;
     Motor FR;
     Motor BL;

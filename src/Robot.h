@@ -22,7 +22,7 @@ class Path;
 #define Y_CHAR_GOAL 'G'
 #define IR_BUFFER_SIZE 8
 
-struct Robot {
+struct Robot: public MovementFSM {
   char KEYPAD_KEYS [KEYPAD_ROWS][KEYPAD_COLS] = {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
@@ -38,7 +38,6 @@ struct Robot {
   PingSensor m_pingL;
   PingSensor m_pingR;
   
-  MovementFSM m_controller;
   float m_distanceL;
   float m_distanceR;
   unsigned int state;
