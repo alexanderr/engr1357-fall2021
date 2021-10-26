@@ -55,3 +55,45 @@ bool AlignIRAction::isActionComplete(unsigned long timeDelta, unsigned int robot
   else
     return robotState & RobotState::ALIGNED_Y;
 }
+
+void ReadInclinationAction::doAction(Robot* robot) {
+  robot->getInclinometerReading();
+}
+
+bool ReadInclinationAction::isActionComplete(unsigned long timeDelta, unsigned int robotState){
+  return true;
+}
+
+void ReadSalinityAction::doAction(Robot* robot) {
+  robot->getSalinityReading();
+}
+
+bool ReadSalinityAction::isActionComplete(unsigned long timeDelta, unsigned int robotState){
+  return true;
+}
+
+void MoveSalinityArmAction::doAction(Robot* robot) {
+  if(direction == UP){
+    robot->m_salinityArm->moveUp();
+  } else {
+    robot->m_salinityArm->moveDown();
+  }
+}
+
+bool MoveSalinityArmAction::isActionComplete(unsigned long timeDelta, unsigned int robotState){
+  if ((robotState & RobotState::SALINITY_ARM_UP) && (direction == UP)) {
+    return true;
+  } else if ((robotState & RobotState::SALINITY_ARM_DOWN) && (direction == DOWN)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void CollectAction::doAction(Robot* robot) {
+  robot->m_chomper.m_chomping = true;
+}
+
+bool CollectAction::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
+  return timeDelta > duration;
+}

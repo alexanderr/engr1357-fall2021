@@ -17,7 +17,7 @@ Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKL
   m_collisionThreshold = DEFAULT_COLLISION_THRESHOLD;
   state = 0;
   m_actionMgr = new ActionManager;
-  
+  m_salinityArm = new SalinityArm(Pins::SALINITY_ARM);
 };
 
 void Robot::ping(){
@@ -33,6 +33,9 @@ void Robot::checkKeypad()  {
     case '*': setMovementState(StationaryState::getInstance()); break;
     case 'A': m_chomper.m_chomping = !m_chomper.m_chomping; break;
     case 'B': m_actionMgr->setActionList(ActionManager::MAZELEFT); break;
+    case 'C': m_actionMgr->setActionList(ActionManager::MAZERIGHT); break;
+    case 'D': m_actionMgr->setActionList(ActionManager::SALINITYLEFT); break;
+    case 'E': m_actionMgr->setActionList(ActionManager::SALINITYRIGHT); break;
   }
 }
 
@@ -63,7 +66,14 @@ void Robot::loop()  {
   if(m_irX.onlyContainsChar(X_CHAR_GOAL)) state |= RobotState::ALIGNED_X;
   if(m_irY.onlyContainsChar(Y_CHAR_GOAL)) state |= RobotState::ALIGNED_Y;
 
+  // Set the servo arm bits.
+  int salinityArmAngle = m_salinityArm->arm.read();
+  if(salinityArmAngle == SalinityArm::UP_ANGLE) { state |= RobotState::SALINITY_ARM_UP; }
+  else if(salinityArmAngle == SalinityArm::DOWN_ANGLE) { state |= RobotState::SALINITY_ARM_DOWN; }
+  else { state |= RobotState::SALINITY_ARM_MOVING; }
+
   m_actionMgr->actionLoop(now, state, this);
+  m_chomper.chomp(now);
 
   displayState();
   delay(100);
