@@ -1,6 +1,8 @@
 #ifndef IRSENSOR_H
 #define IRSENSOR_H
 
+#include <Arduino.h>
+
 // IR DETAILS
 #define EVENT_RISING 1
 #define EVENT_FALLING 2
