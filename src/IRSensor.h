@@ -18,11 +18,13 @@ public:
   int num_chars;
   unsigned long prev_time;
   
+  byte m_pin;
+
   unsigned char IRChar, IRCharBitMask;
   unsigned char buffer[IR_BUFFER_SIZE];
   bool receiverState;
   unsigned long cur_time, ticks;
-  byte m_pin;
+
 
   IRSensor() = default;
 
@@ -32,7 +34,6 @@ public:
 
   int scan() {
       // takes 13 ms per char to broadcast from a beacon
-      char reading;
       unsigned char event;
       // reset the buffer
       memset(buffer, 0, IR_BUFFER_SIZE);
