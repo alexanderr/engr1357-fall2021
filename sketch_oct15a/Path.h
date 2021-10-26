@@ -1,22 +1,8 @@
 #ifndef PATH_H
 #define PATH_H
 
+#include "RobotConstants.h"
 #include "Robot.h"
-
-namespace RobotState {
-  enum: unsigned int {
-    STATIONARY = 0, // 0
-    FORWARD = 1 << 0, // 10
-    LEFT_COLL = 1 << 1, // 100
-    RIGHT_COLL = 1 << 2,
-    TURNING_LEFT = 1 << 3,
-    TURNING_RIGHT = 1 << 4,
-    REVERSING_LEFT = 1 << 5,
-    REVERSING_RIGHT = 1 << 6,
-    ALIGNED_X = 1 << 7,
-    ALIGNED_Y = 1 << 8,
-  };
-};
 
 
 
@@ -30,8 +16,6 @@ namespace RobotState {
 
 #define TURNPADDING3_TIME 3000
 #define REVERSETURN3_TIME 1000
-
-#define AFTER_TURN_90(_NEXT_STATE) if(delta > TURN90_TIME) setState(_NEXT_STATE, now); break;
 
 
 struct Path {
