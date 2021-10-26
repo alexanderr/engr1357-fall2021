@@ -18,24 +18,24 @@ void Path::setState(int newState, unsigned long now)  {
     case FOLLOW_WALL2_STATE:
     case REVERSE_TURN_PADDING_STATE:
     {
-      robot->m_controller.setState(ForwardState::getInstance()); break;
+      robot->setMovementState(ForwardState::getInstance()); break;
     }
 
-    case ROTATE1_STATE: { robot->m_controller.setState(TurnLeftState::getInstance()); break; }
+    case ROTATE1_STATE: { robot->setMovementState(TurnLeftState::getInstance()); break; }
 
-    case REVERSETURN1_STATE: { robot->m_controller.setState(ReverseTurnLeftState::getInstance()); break; }
+    case REVERSETURN1_STATE: { robot->setMovementState(ReverseTurnLeftState::getInstance()); break; }
 
-    case ROTATE2_STATE: { robot->m_controller.setState(TurnRightState::getInstance()); break; }
+    case ROTATE2_STATE: { robot->setMovementState(TurnRightState::getInstance()); break; }
 
-    case ROTATE3_STATE: { robot->m_controller.setState(TurnLeftState::getInstance()); break;}
+    case ROTATE3_STATE: { robot->setMovementState(TurnLeftState::getInstance()); break;}
 
-    case ROTATE4_STATE: { robot->m_controller.setState(TurnLeftState::getInstance()); break; }
+    case ROTATE4_STATE: { robot->setMovementState(TurnLeftState::getInstance()); break; }
 
-    case ROTATE5_STATE: { robot->m_controller.setState(TurnRightState::getInstance()); break; }
+    case ROTATE5_STATE: { robot->setMovementState(TurnRightState::getInstance()); break; }
 
-    case REVERSETURN2_STATE: { robot->m_controller.setState(ReverseTurnRightState::getInstance()); break; }
+    case REVERSETURN2_STATE: { robot->setMovementState(ReverseTurnRightState::getInstance()); break; }
 
-    case REVERSETURN3_STATE: { robot->m_controller.setState(ReverseTurnLeftState::getInstance()); break; }
+    case REVERSETURN3_STATE: { robot->setMovementState(ReverseTurnLeftState::getInstance()); break; }
   }
 }
 
