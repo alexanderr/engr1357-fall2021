@@ -9,6 +9,7 @@
 #include "IRSensor.h"
 #include "RobotConstants.h"
 #include "Actions.h"
+#include "SalinityArm.h"
 
 
 /* constants */
@@ -47,6 +48,7 @@ struct Robot: public MovementFSM {
   IRSensor m_irX;
   IRSensor m_irY;
   ActionManager* m_actionMgr;
+  SalinityArm* m_salinityArm;
 
   Robot();
 
@@ -61,6 +63,10 @@ struct Robot: public MovementFSM {
 
   int getInclinometerReading() {
     return analogRead(Pins::INCLINOMETER); // 0 - 1023
+  }
+
+  int getSalinityReading() {
+    return analogRead(Pins::SALINITY_SENSOR); // 0 - 1023
   }
 
   void ping();

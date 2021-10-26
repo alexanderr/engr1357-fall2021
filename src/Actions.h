@@ -19,6 +19,8 @@
 
 #define TURNPADDING4_TIME 3000
 
+#define COLLECTION_TIME 5000
+
 
 
 class Robot;
@@ -101,6 +103,42 @@ struct AlignIRAction: public Action {
   bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
 };
 
+struct ReadInclinationAction: public Action {
+  ReadInclinationAction() = default;
+
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
+};
+
+
+struct MoveSalinityArmAction: public Action {
+  enum {
+    UP,
+    DOWN
+  };
+
+  unsigned char direction;
+
+  MoveSalinityArmAction(unsigned char direction): direction(direction) {}
+
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
+};
+
+struct ReadSalinityAction: public Action {
+  ReadSalinityAction() = default;
+
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
+};
+
+struct CollectAction: public Action {
+  unsigned int duration;
+  CollectAction(unsigned int duration): duration(duration) {}
+
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
+};
 
 
 struct ActionManager {
@@ -110,6 +148,9 @@ struct ActionManager {
   unsigned long lastActionStartTime;
 
   static Action* MAZELEFT[];
+  static Action* MAZERIGHT[];
+  static Action* SALINITYLEFT[];
+  static Action* SALINITYRIGHT[];
 
   ActionManager() {
     actionArray = nullptr;
@@ -148,6 +189,15 @@ struct ActionManager {
   Action** getPathFromCode(const char* code) {
     if(strcmp(code, "A1") == 0){
       return MAZELEFT;
+    }
+    else if(strcmp(code, "A2") == 0){
+      return MAZELEFT;
+    }
+    else if(strcmp(code, "B1") == 0){
+      return SALINITYLEFT;
+    }
+    else if(strcmp(code, "B2") == 0){
+      return SALINITYRIGHT;
     }
     else {
       return nullptr;

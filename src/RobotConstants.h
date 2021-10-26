@@ -3,15 +3,18 @@
 
 namespace RobotState {
   enum: unsigned short {
-    FORWARD = 1 << 0,         // 0000 0000 0000 0001
-    TURNING_LEFT = 1 << 1,    // 0000 0000 0000 0010
-    TURNING_RIGHT = 1 << 2,   // 0000 0000 0000 0100
-    REVERSING_LEFT = 1 << 3,  // 0000 0000 0000 1000
-    REVERSING_RIGHT = 1 << 4, // 0000 0000 0001 0000
-    LEFT_COLL = 1 << 5,       // 0000 0000 0010 0000
-    RIGHT_COLL = 1 << 6,      // 0000 0000 0100 0000
-    ALIGNED_X = 1 << 7,       // 0000 0000 1000 0000
-    ALIGNED_Y = 1 << 8,       // 0000 0001 0000 0000
+    FORWARD = 1 << 0,                 // 0000 0000 0000 0001
+    TURNING_LEFT = 1 << 1,            // 0000 0000 0000 0010
+    TURNING_RIGHT = 1 << 2,           // 0000 0000 0000 0100
+    REVERSING_LEFT = 1 << 3,          // 0000 0000 0000 1000
+    REVERSING_RIGHT = 1 << 4,         // 0000 0000 0001 0000
+    LEFT_COLL = 1 << 5,               // 0000 0000 0010 0000
+    RIGHT_COLL = 1 << 6,              // 0000 0000 0100 0000
+    ALIGNED_X = 1 << 7,               // 0000 0000 1000 0000
+    ALIGNED_Y = 1 << 8,               // 0000 0001 0000 0000
+    SALINITY_ARM_UP = 1 << 9,         // 0000 0010 0000 0000
+    SALINITY_ARM_DOWN = 1 << 10,      // 0000 0100 0000 0000
+    SALINITY_ARM_MOVING = 1 << 11,    // 0000 1000 0000 0000
   };
 
   // some useful bitmasks
@@ -32,6 +35,7 @@ namespace Pins {
     M_BACKLEFT = 6,
     
     SERVO = 11,
+    SALINITY_ARM = 12,
 
     PING1_ECHO = 29,
     PING1_TRIG = 27,
@@ -40,6 +44,8 @@ namespace Pins {
     PING2_ECHO = 33,
 
     INCLINOMETER = 7,
+
+    SALINITY_SENSOR = 14,
 
     IR_X = 1,
     IR_Y = 2,
