@@ -8,19 +8,19 @@
 #include "Chomper.h"
 #include "IRSensor.h"
 #include "RobotConstants.h"
-
-
-class Path;
+#include "Actions.h"
 
 
 /* constants */
 #define KEYPAD_ROWS 4
 #define KEYPAD_COLS 4
-#define COLLISION_THRESHOLD 30.0
+#define DEFAULT_COLLISION_THRESHOLD 30.0
 
 #define X_CHAR_GOAL 'K'
 #define Y_CHAR_GOAL 'G'
 #define IR_BUFFER_SIZE 8
+
+struct ActionManager;
 
 struct Robot: public MovementFSM {
   char KEYPAD_KEYS [KEYPAD_ROWS][KEYPAD_COLS] = {
@@ -40,11 +40,13 @@ struct Robot: public MovementFSM {
   
   float m_distanceL;
   float m_distanceR;
+  float m_collisionThreshold;
+
   unsigned int state;
 
   IRSensor m_irX;
   IRSensor m_irY;
-  Path* m_path;
+  ActionManager* m_actionMgr;
 
   Robot();
 

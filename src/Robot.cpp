@@ -1,5 +1,4 @@
 #include "Robot.h"
-#include "Path.h"
 
 
 Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT) {
@@ -15,9 +14,10 @@ Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKL
   m_irY = IRSensor(Pins::IR_Y);
 
   pinMode(Pins::INCLINOMETER, INPUT);
-
+  m_collisionThreshold = DEFAULT_COLLISION_THRESHOLD;
   state = 0;
-  m_path = nullptr;
+  m_actionMgr = new ActionManager;
+  
 };
 
 void Robot::ping(){
@@ -32,6 +32,7 @@ void Robot::checkKeypad()  {
     case '1': setMovementState(ForwardState::getInstance()); break;
     case '*': setMovementState(StationaryState::getInstance()); break;
     case 'A': m_chomper.m_chomping = !m_chomper.m_chomping; break;
+    case 'B': m_actionMgr->setActionList(ActionManager::MAZELEFT); break;
   }
 }
 
@@ -55,16 +56,14 @@ void Robot::loop()  {
   else if(movementState == &ReverseTurnRightState::getInstance()) state |= RobotState::REVERSING_RIGHT;
 
   // Set the collision bits.
-  if(m_distanceL < COLLISION_THRESHOLD) state |= RobotState::LEFT_COLL;
-  if(m_distanceR < COLLISION_THRESHOLD) state |= RobotState::RIGHT_COLL;
+  if(m_distanceL < m_collisionThreshold) state |= RobotState::LEFT_COLL;
+  if(m_distanceR < m_collisionThreshold) state |= RobotState::RIGHT_COLL;
 
   // Set the IR alignment bits.
   if(m_irX.onlyContainsChar(X_CHAR_GOAL)) state |= RobotState::ALIGNED_X;
   if(m_irY.onlyContainsChar(Y_CHAR_GOAL)) state |= RobotState::ALIGNED_Y;
 
-    
-  if(m_path)
-    m_path->loop(now);
+  m_actionMgr->actionLoop(now, state, this);
 
   displayState();
   delay(100);
