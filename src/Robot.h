@@ -1,6 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 #include <Keypad.h>
+#include <LCD.h> //I2C library
 #include <LiquidCrystal_I2C.h>
 #include "MovementFSM.h"
 #include "PingSensor.h"
