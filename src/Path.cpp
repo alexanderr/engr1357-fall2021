@@ -36,6 +36,10 @@ void Path::setState(int newState, unsigned long now)  {
     case REVERSETURN2_STATE: { robot->setMovementState(ReverseTurnRightState::getInstance()); break; }
 
     case REVERSETURN3_STATE: { robot->setMovementState(ReverseTurnLeftState::getInstance()); break; }
+
+    case COLLECT_STATE: {
+      robot->setMovementState(StationaryState::getInstance()); break;
+    }
   }
 }
 
