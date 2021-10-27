@@ -78,4 +78,23 @@ public:
   }
 };
 
+class NewTurnLeftState: public MovementState {
+public:
+  void enter(MovementFSM* controller);
+  static MovementState& getInstance() {
+    static NewTurnLeftState singleton;
+    return singleton;    
+  }
+};
+
+class NewTurnRightState: public MovementState {
+public:
+  void enter(MovementFSM* controller);
+  static MovementState& getInstance() {
+    static NewTurnRightState singleton;
+    return singleton;    
+  }
+};
+
+
 #endif
