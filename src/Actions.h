@@ -19,6 +19,8 @@
 
 #define TURNPADDING4_TIME 3000
 
+#define COLLECT_RETURN_TIME 1500
+
 #define COLLECTION_TIME 5000
 
 
@@ -149,8 +151,12 @@ struct ActionManager {
 
   static Action* MAZELEFT[];
   static Action* MAZERIGHT[];
+  static Action* MAZERETURNLEFT[];
+  static Action* MAZERETURNRIGHT[];
   static Action* SALINITYLEFT[];
   static Action* SALINITYRIGHT[];
+  static Action* SALINITYRETURNLEFT[];
+  static Action* SALINITYRETURNRIGHT[];
 
   ActionManager() {
     actionArray = nullptr;

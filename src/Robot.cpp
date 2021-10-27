@@ -1,5 +1,7 @@
 #include "Robot.h"
 
+#define ROBOT_TICKRATE 50 // milliseconds
+
 
 Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT) {
   m_lcd = new LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
@@ -76,5 +78,5 @@ void Robot::loop()  {
   m_chomper.chomp(now);
 
   displayState();
-  delay(100);
+  delay(ROBOT_TICKRATE);
 }
