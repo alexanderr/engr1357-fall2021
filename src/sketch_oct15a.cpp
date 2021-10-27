@@ -5,98 +5,34 @@
 
 Robot* robot;
 
-Action* ActionManager::MAZELEFT[] = {
-    new TimedForwardAction(BRIDGE_TIME),
-    new Turn90Action(Directional::LEFT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::RIGHT),
-    new FollowWallAction(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING1_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN2_TIME, Directional::LEFT),
-    new FollowWallAction(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING2_TIME),
-    new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::LEFT),
-    new AlignIRAction(AlignIRAction::X),
-    new Turn90Action(Directional::RIGHT),
-    new AlignIRAction(AlignIRAction::Y),
-    new TimedForwardAction(TURNPADDING4_TIME),
-    new TimedReverseTurnAction(REVERSETURN3_TIME, Directional::RIGHT),
-    new CollectAction(COLLECTION_TIME),
-};
 
 Action* ActionManager::MAZERIGHT[] = {
-    new TimedForwardAction(BRIDGE_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::LEFT),
-    new FollowWallAction(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING1_TIME),
+    new TimedForwardAction(4000),
     new Turn90Action(Directional::LEFT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN2_TIME, Directional::RIGHT),
-    new FollowWallAction(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING2_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new AlignIRAction(AlignIRAction::X),
+    new ToWallAction(30),
     new Turn90Action(Directional::LEFT),
-    new AlignIRAction(AlignIRAction::Y),
-    new TimedForwardAction(TURNPADDING4_TIME),
-    new TimedReverseTurnAction(REVERSETURN3_TIME, Directional::LEFT),
-    new CollectAction(COLLECTION_TIME),
+    new FollowWallAction(Directional::RIGHT, 70),
+    new TimedForwardAction(1250),
+    new Turn90Action(Directional::RIGHT),
+    new ToWallAction(30),
+    new Turn90Action(Directional::RIGHT),
+    new TimedTurnAction(100, Directional::RIGHT),
+    new FollowWallAction(Directional::LEFT, 70),
+    new TimedForwardAction(750),
+    new Turn90Action(Directional::LEFT),
+    new TimedForwardAction(3000),
+    new Turn90Action(Directional::LEFT),
+    // new TimedForwardAction(TURNPADDING4_TIME),
+    // new TimedReverseTurnAction(REVERSETURN3_TIME, Directional::LEFT),
+    // new CollectAction(COLLECTION_TIME),
 };
 
-Action* ActionManager::MAZERETURNLEFT[] = {
+Action* ActionManager::COLLECT_UP[] = {
     new TimedForwardAction(COLLECT_RETURN_TIME),
-    new Turn90Action(Directional::LEFT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::RIGHT),
-    new FollowWallAction(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING1_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING1_TIME),
-    new FollowWallAction(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING2_TIME),
-    new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(BRIDGE_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::RIGHT), 
-    new TimedForwardAction(BRIDGE_TIME),
 };
-
-
-Action* ActionManager::MAZERETURNRIGHT[] = {
-    new TimedForwardAction(COLLECT_RETURN_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::LEFT),
-    new FollowWallAction(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING1_TIME),
-    new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING1_TIME),
-    new FollowWallAction(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING2_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(BRIDGE_TIME),
-    new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING3_TIME),
-    new Turn90Action(Directional::LEFT), 
-    new TimedForwardAction(BRIDGE_TIME),
-};
-
 
 Action* ActionManager::SALINITYLEFT[] = {
-    new FollowWallAction(Directional::LEFT),
+    new FollowWallAction(Directional::LEFT, DEFAULT_COLLISION_THRESHOLD),
     new TimedForwardAction(TURNPADDING2_TIME),
     new Turn90Action(Directional::LEFT), 
     new TimedForwardAction(TURNPADDING2_TIME),
@@ -114,14 +50,16 @@ Action* ActionManager::SALINITYLEFT[] = {
 };
 
 Action* ActionManager::SALINITYRIGHT[] = {
-    new FollowWallAction(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING2_TIME),
+    new FollowWallAction(Directional::RIGHT, DEFAULT_COLLISION_THRESHOLD),
+    new TimedForwardAction(300),
     new Turn90Action(Directional::RIGHT), 
-    new TimedForwardAction(TURNPADDING2_TIME),
+    new TimedForwardAction(3000),
     new Turn90Action(Directional::RIGHT),
-    new AlignIRAction(AlignIRAction::Y),
+    new TimedForwardAction(3000),
+    //new AlignIRAction(AlignIRAction::Y),
     new Turn90Action(Directional::LEFT),  
-    new AlignIRAction(AlignIRAction::X),
+    //new AlignIRAction(AlignIRAction::X),
+    new TimedForwardAction(TURNPADDING2_TIME),
     new TimedForwardAction(TURNPADDING2_TIME), 
     new ReadInclinationAction(),
     new TimedForwardAction(TURNPADDING2_TIME),
@@ -131,27 +69,36 @@ Action* ActionManager::SALINITYRIGHT[] = {
     new MoveSalinityArmAction(MoveSalinityArmAction::UP),
 };
 
-Action* ActionManager::SALINITYRETURNLEFT[] = {
+
+Action* ActionManager::MAZELEFT[NUM_MAZEACTIONS] = {
+    new TimedForwardAction(4000),
     new Turn90Action(Directional::LEFT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING1_TIME),
+    new ToWallAction(30),
+    new Turn90Action(Directional::LEFT),
+    new FollowWallAction(Directional::RIGHT, 70),
+    new TimedForwardAction(1250),
     new Turn90Action(Directional::RIGHT),
-    new TimedForwardAction(TURNPADDING2_TIME),
+    new ToWallAction(30),
     new Turn90Action(Directional::RIGHT),
-    new FollowWallAction(Directional::RIGHT), 
+    new TimedTurnAction(100, Directional::RIGHT),
+    new FollowWallAction(Directional::LEFT, 70),
+    new TimedForwardAction(750),
+    new Turn90Action(Directional::LEFT),
+    new TimedForwardAction(3000),
+    new Turn90Action(Directional::LEFT),
 };
 
-Action* ActionManager::SALINITYRETURNRIGHT[] = {
-    new Turn90Action(Directional::RIGHT),
-    new ToWallAction(DEFAULT_COLLISION_THRESHOLD),
-    new TimedReverseTurnAction(REVERSETURN1_TIME, Directional::LEFT),
-    new TimedForwardAction(TURNPADDING1_TIME),
+Action* ActionManager::UNIT_TEST[NUM_TESTACTIONS] = {
+    new TimedForwardAction(2000), 
+    new StopAction(1000),
+    new ReadInclinationAction(),
+    new TimedForwardAction(4000), 
     new Turn90Action(Directional::LEFT),
-    new TimedForwardAction(TURNPADDING2_TIME),
-    new Turn90Action(Directional::LEFT),
-    new FollowWallAction(Directional::LEFT), 
+    new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
+    new ReadSalinityAction(),
+    new MoveSalinityArmAction(MoveSalinityArmAction::UP),
 };
+
 
 void setup() {
   robot = new Robot();

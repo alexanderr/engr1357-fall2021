@@ -36,9 +36,12 @@ struct Robot: public MovementFSM {
   LiquidCrystal_I2C* m_lcd;
 
   Chomper m_chomper;
+
+  PingSensor m_pingF;
   PingSensor m_pingL;
   PingSensor m_pingR;
   
+  float m_distanceF;
   float m_distanceL;
   float m_distanceR;
   float m_collisionThreshold;
@@ -57,7 +60,7 @@ struct Robot: public MovementFSM {
   bool inline isTurning() { return state & RobotState::TURNING_MASK; }
   bool inline isReversing() { return state & RobotState::REVERSING_MASK; }
   bool inline isMoving() { return state & RobotState::MOVING_MASK; }
-  bool inline hasFrontCollision() { return state & RobotState::COLLISION_MASK; }
+  bool inline hasFrontCollision() { return state & RobotState::FRONT_COLL; }
   bool inline hasLeftCollision() { return state & RobotState::LEFT_COLL; }
   bool inline hasRightCollision() { return state & RobotState::RIGHT_COLL; }
 
@@ -69,14 +72,27 @@ struct Robot: public MovementFSM {
     return analogRead(Pins::SALINITY_SENSOR); // 0 - 1023
   }
 
+  float getMedianDistance(PingSensor& sensor);
+
   void ping();
 
   void displayState(){
     m_lcd->clear();
     m_lcd->setCursor(0, 0);
-    m_lcd->print(String(state));
-  }
 
+    if(isTurning()){
+      m_lcd->print("Turning");
+    }
+    else if(isReversing()){
+      m_lcd->print("Reversing");
+    }
+    else if(isMoving()){
+      m_lcd->print("Forward");
+    }
+    else {
+      m_lcd->print("Stationary");
+    }
+  }
   
   void loop();
 

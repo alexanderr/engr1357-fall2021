@@ -10,18 +10,19 @@ namespace RobotState {
     REVERSING_RIGHT = 1 << 4,         // 0000 0000 0001 0000
     LEFT_COLL = 1 << 5,               // 0000 0000 0010 0000
     RIGHT_COLL = 1 << 6,              // 0000 0000 0100 0000
-    ALIGNED_X = 1 << 7,               // 0000 0000 1000 0000
-    ALIGNED_Y = 1 << 8,               // 0000 0001 0000 0000
-    SALINITY_ARM_UP = 1 << 9,         // 0000 0010 0000 0000
-    SALINITY_ARM_DOWN = 1 << 10,      // 0000 0100 0000 0000
-    SALINITY_ARM_MOVING = 1 << 11,    // 0000 1000 0000 0000
+    FRONT_COLL = 1 << 7,              // 0000 0000 1000 0000
+    ALIGNED_X = 1 << 7,               // 0000 0001 0000 0000
+    ALIGNED_Y = 1 << 8,               // 0000 0010 0000 0000
+    SALINITY_ARM_UP = 1 << 9,         // 0000 0100 0000 0000
+    SALINITY_ARM_DOWN = 1 << 10,      // 0000 1000 0000 0000
+    SALINITY_ARM_MOVING = 1 << 11,    // 0001 0000 0000 0000
   };
 
   // some useful bitmasks
   const static unsigned short TURNING_MASK = TURNING_LEFT | TURNING_RIGHT;           // 0000 0000 0000 0110
   const static unsigned short REVERSING_MASK = REVERSING_LEFT | REVERSING_RIGHT;     // 0000 0000 0001 1000
   const static unsigned short MOVING_MASK = FORWARD | TURNING_MASK | REVERSING_MASK; // 0000 0000 0001 1111
-  const static unsigned short COLLISION_MASK = LEFT_COLL | RIGHT_COLL;               // 0000 0000 0110 0000
+  // const static unsigned short COLLISION_MASK = LEFT_COLL | RIGHT_COLL;               // 0000 0000 0110 0000
    
 };
 
@@ -34,14 +35,17 @@ namespace Pins {
     M_FRONTLEFT = 10,
     M_BACKLEFT = 6,
     
-    SERVO = 11,
+    COLLECTOR_SERVO = 11,
     SALINITY_ARM = 12,
 
-    PING1_ECHO = 29,
-    PING1_TRIG = 27,
+    PINGF_ECHO = 29,
+    PINGF_TRIG = 27,
 
-    PING2_TRIG = 31,
-    PING2_ECHO = 33,
+    PINGR_TRIG = 23,
+    PINGR_ECHO = 25,
+
+    PINGL_ECHO = 13,
+    PINGL_TRIG = 12,
 
     INCLINOMETER = 7,
 
@@ -51,6 +55,23 @@ namespace Pins {
     IR_Y = 2,
   };
 };
+
+namespace RobotUtil {
+
+template<typename T>
+void insertionSort(T array[], int size) {
+  for (int step = 1; step < size; step++) {
+    int key = array[step];
+    int j = step - 1;
+
+    while (key < array[j] && j >= 0) {
+      array[j + 1] = array[j];
+      --j;
+    }
+    array[j + 1] = key;
+  }
+}
+}
 
 
 

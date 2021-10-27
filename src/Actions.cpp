@@ -1,10 +1,25 @@
 #include "Actions.h"
 
+bool Turn90Action::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
+  if(direction == LEFT)
+    return timeDelta >= TURN90_LEFTTIME;
+  else
+    return timeDelta >= TURN90_RIGHTTIME;
+}
+
 void Turn90Action::doAction(Robot* robot) {
   if(direction == LEFT)
     robot->setMovementState(TurnLeftState::getInstance());
   else
     robot->setMovementState(TurnRightState::getInstance());
+}
+
+bool StopAction::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
+    return timeDelta >= STOP_TIME;
+}
+
+void StopAction::doAction(Robot* robot) {
+    robot->setMovementState(StationaryState::getInstance());
 }
 
 void TimedForwardAction::doAction(Robot* robot) {
@@ -31,10 +46,11 @@ void ToWallAction::doAction(Robot* robot) {
 }
 
 bool ToWallAction::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
-  return (robotState & RobotState::COLLISION_MASK);
+  return (robotState & RobotState::FRONT_COLL);
 }
 
 void FollowWallAction::doAction(Robot* robot) {
+  robot->m_collisionThreshold = distance;
   robot->setMovementState(ForwardState::getInstance());
 }
 
@@ -96,4 +112,47 @@ void CollectAction::doAction(Robot* robot) {
 
 bool CollectAction::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
   return timeDelta > duration;
+}
+
+void StartCollectionAction::doAction(Robot* robot) {
+
+}
+
+
+void ActionManager::actionLoop(unsigned int robotState, Robot* robot) {
+    unsigned long now = millis();
+    // Check if we have actions to complete.
+    if(actionArray == nullptr)
+      return;
+    
+    if(index >= numActions){
+      if(nextActionArray != nullptr){
+         setActionList(nextActionArray, nextNumActions);
+         nextActionArray = nullptr;
+         nextNumActions = 0;
+         lastActionStartTime = 0;
+      }
+      else{
+        return;
+      }
+    }
+
+    if(lastActionStartTime == 0){
+      // Start the action.
+      lastActionStartTime = now;
+      actionArray[index]->doAction(robot);
+      Serial.println(String("Started action:") + String(index));
+    }
+    else {
+      Action* currentAction = actionArray[index];
+      unsigned long timeDelta = now - lastActionStartTime;
+      Serial.println("timeDelta:" + String(timeDelta));
+      if(currentAction->isActionComplete(timeDelta, robotState)){
+        Serial.println(String("Action complete! :") + String(index));
+        ++index;
+        lastActionStartTime = 0;
+        if(index == numActions)
+          robot->setMovementState(StationaryState::getInstance());
+      }
+    }
 }
