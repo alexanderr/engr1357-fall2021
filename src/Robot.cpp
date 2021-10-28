@@ -1,6 +1,6 @@
 #include "Robot.h"
 
-#define ROBOT_TICKRATE 15 // milliseconds
+#define ROBOT_TICKRATE 50 // milliseconds
 
 
 Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKLEFT, Pins::M_BACKRIGHT) {
@@ -26,15 +26,16 @@ Robot::Robot(): MovementFSM(Pins::M_FRONTLEFT, Pins::M_FRONTRIGHT, Pins::M_BACKL
 };
 
 
-#define PING_BUFFER 3
+#define PING_BUFFER 1
 
 float Robot::getMedianDistance(PingSensor& sensor) {
-  static float buffer[PING_BUFFER];
-  for(int i = 0; i < PING_BUFFER; ++i){
-    buffer[i] =  sensor.getDistance();
-  }
-  RobotUtil::insertionSort(buffer, PING_BUFFER);
-  return buffer[PING_BUFFER / 2];
+  return sensor.getDistance();
+  // static float buffer[PING_BUFFER];
+  // for(int i = 0; i < PING_BUFFER; ++i){
+  //   buffer[i] =  sensor.getDistance();
+  // }
+  // RobotUtil::insertionSort(buffer, PING_BUFFER);
+  // return buffer[PING_BUFFER / 2];
 }
 
 void Robot::ping(){
@@ -53,17 +54,23 @@ void Robot::checkKeypad()  {
     case '2': m_actionMgr->setActionList(ActionManager::MAZELEFT, NUM_MAZEACTIONS); break;
     case '3': m_actionMgr->setActionList(ActionManager::SALINITYRIGHT, NUM_SALINITYACTIONS); break;
     case '4': m_actionMgr->setActionList(ActionManager::UNIT_TEST, NUM_TESTACTIONS); break;
-    // case 'D': m_actionMgr->setActionList(ActionManager::SALINITYLEFT); break;
+    case '5': m_actionMgr->setActionList(ActionManager::TAKE_SALINE, 1); break;
     // case 'E': m_actionMgr->setActionList(ActionManager::SALINITYRIGHT); break;
   }
 }
 
 
 void Robot::loop()  {
-  static int i = 0;
+  static unsigned int i = 0;
 
   checkKeypad();
-  ping();
+
+  switch(i % 4) {
+    case 0: m_distanceF = getMedianDistance(m_pingF); break;
+    case 1: m_distanceL = getMedianDistance(m_pingL); break;
+    case 2: m_distanceR = getMedianDistance(m_pingR); break;
+  }
+
   // m_irX.scan();
   // m_irY.scan();
 
@@ -96,13 +103,13 @@ void Robot::loop()  {
 
   m_actionMgr->actionLoop(state, this);
 
-  if((i % 4) == 0){
-    m_lcd->clear();
-    m_lcd->setCursor(0, 0);
-    m_lcd->print(String(m_distanceF));
-    m_lcd->setCursor(0, 1);
-    m_lcd->print(String(m_distanceR));
-  }
+  // if((i % 4) == 0){
+  //   m_lcd->clear();
+  //   m_lcd->setCursor(0, 0);
+  //   m_lcd->print(String(m_distanceF));
+  //   m_lcd->setCursor(0, 1);
+  //   m_lcd->print(String(m_distanceR));
+  // }
 
 
   
@@ -110,6 +117,15 @@ void Robot::loop()  {
   m_chomper.chomp(now);
 
   // displayState();
+
+  if((i % 16)) {
+    m_lcd->clear();
+    m_lcd->setCursor(0, 0);
+    m_lcd->print("incline reading:");
+    m_lcd->setCursor(0, 1);
+    m_lcd->print(String(getInclinometerReading()));
+  }
+
   delay(ROBOT_TICKRATE);
 
   ++i;

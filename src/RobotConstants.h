@@ -16,6 +16,7 @@ namespace RobotState {
     SALINITY_ARM_UP = 1 << 9,         // 0000 0100 0000 0000
     SALINITY_ARM_DOWN = 1 << 10,      // 0000 1000 0000 0000
     SALINITY_ARM_MOVING = 1 << 11,    // 0001 0000 0000 0000
+    TAKING_INCLINE = 1 << 12,
   };
 
   // some useful bitmasks
@@ -36,7 +37,7 @@ namespace Pins {
     M_BACKLEFT = 6,
     
     COLLECTOR_SERVO = 11,
-    SALINITY_ARM = 12,
+    SALINITY_ARM = 3,
 
     PINGF_ECHO = 29,
     PINGF_TRIG = 27,
@@ -47,7 +48,7 @@ namespace Pins {
     PINGL_ECHO = 13,
     PINGL_TRIG = 12,
 
-    INCLINOMETER = 7,
+    INCLINOMETER = 0,
 
     SALINITY_SENSOR = 14,
 
