@@ -88,36 +88,21 @@ bool ReadSalinityAction::isActionComplete(unsigned long timeDelta, unsigned int 
   return true;
 }
 
-void MoveSalinityArmAction::doAction(Robot* robot) {
-  if(direction == UP){
-    robot->m_salinityArm->moveUp();
-  } else {
-    robot->m_salinityArm->moveDown();
-  }
-}
-
-bool MoveSalinityArmAction::isActionComplete(unsigned long timeDelta, unsigned int robotState){
-  if ((robotState & RobotState::SALINITY_ARM_UP) && (direction == UP)) {
-    return true;
-  } else if ((robotState & RobotState::SALINITY_ARM_DOWN) && (direction == DOWN)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-void CollectAction::doAction(Robot* robot) {
-  robot->m_chomper.m_chomping = true;
-}
-
-bool CollectAction::isActionComplete(unsigned long timeDelta, unsigned int robotState) {
-  return timeDelta > duration;
+void ToggleSalinityArmAction::doAction(Robot* robot) {
+    robot->m_salinityArm->toggle();
 }
 
 void StartCollectionAction::doAction(Robot* robot) {
-
+  robot->m_chomper.m_chomping = true;
 }
 
+void StopCollectionAction::doAction(Robot* robot) {
+  robot->m_chomper.m_chomping = false;
+}
+
+void SetSpeedAction::doAction(Robot* robot) {
+  Motor::multiSetSpeed(speed, robot->FL, robot->FR, robot->BL, robot->BR);
+}
 
 void ActionManager::actionLoop(unsigned int robotState, Robot* robot) {
     unsigned long now = millis();

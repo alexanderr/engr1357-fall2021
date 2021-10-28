@@ -7,8 +7,8 @@ Robot* robot;
 
 
 Action* ActionManager::MAZERIGHT[] = {
-    new TimedForwardAction(4000),
-    new Turn90Action(Directional::LEFT),
+    // new TimedForwardAction(4000),
+    // new Turn90Action(Directional::LEFT),
     new ToWallAction(30),
     new Turn90Action(Directional::LEFT),
     new FollowWallAction(Directional::RIGHT, 70),
@@ -44,9 +44,9 @@ Action* ActionManager::SALINITYLEFT[] = {
     new ReadInclinationAction(),
     new TimedForwardAction(TURNPADDING2_TIME),
     new Turn90Action(Directional::LEFT),
-    new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
+    // new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
     new ReadSalinityAction(),
-    new MoveSalinityArmAction(MoveSalinityArmAction::UP), 
+    // new MoveSalinityArmAction(MoveSalinityArmAction::UP), 
 };
 
 Action* ActionManager::SALINITYRIGHT[] = {
@@ -64,19 +64,19 @@ Action* ActionManager::SALINITYRIGHT[] = {
     new ReadInclinationAction(),
     new TimedForwardAction(TURNPADDING2_TIME),
     new Turn90Action(Directional::RIGHT),
-    new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
+    // new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
     new ReadSalinityAction(),
-    new MoveSalinityArmAction(MoveSalinityArmAction::UP),
+    // new MoveSalinityArmAction(MoveSalinityArmAction::UP),
 };
 
 
 Action* ActionManager::MAZELEFT[NUM_MAZEACTIONS] = {
-    new TimedForwardAction(4000),
-    new Turn90Action(Directional::LEFT),
-    new ToWallAction(30),
+    // new TimedForwardAction(4000),
+    // new Turn90Action(Directional::LEFT),
+    new ToWallAction(20),
     new Turn90Action(Directional::LEFT),
     new FollowWallAction(Directional::RIGHT, 70),
-    new TimedForwardAction(1250),
+    new TimedForwardAction(1500),
     new Turn90Action(Directional::RIGHT),
     new ToWallAction(30),
     new Turn90Action(Directional::RIGHT),
@@ -94,15 +94,27 @@ Action* ActionManager::UNIT_TEST[NUM_TESTACTIONS] = {
     new ReadInclinationAction(),
     new TimedForwardAction(4000), 
     new Turn90Action(Directional::LEFT),
-    new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
+    // new MoveSalinityArmAction(MoveSalinityArmAction::DOWN), 
     new ReadSalinityAction(),
-    new MoveSalinityArmAction(MoveSalinityArmAction::UP),
+    // new MoveSalinityArmAction(MoveSalinityArmAction::UP),
+};
+
+Action* ActionManager::TURN_TEST[1] = {
+    new Turn90Action(Directional::RIGHT),
+};
+
+Action* ActionManager::TAKE_SALINE[3] = {
+    new ToggleSalinityArmAction(),
+    new DelayAction(1000),
+    new ToggleSalinityArmAction()
 };
 
 
 void setup() {
   robot = new Robot();
   Serial.begin(9600);
+  robot->ping();
+  robot->m_chomper.m_chomping = true;
 }
 
 void loop() {

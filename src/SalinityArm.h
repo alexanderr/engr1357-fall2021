@@ -2,14 +2,16 @@
 #include "Arduino.h"
 
 struct SalinityArm {
-    enum {
-        UP_ANGLE = 0,
-        DOWN_ANGLE = 90,
-    };
-
     Servo arm;
+    byte pin;
+    bool enabled = false;
 
     SalinityArm(int pin);   
-    void moveUp();
-    void moveDown(); 
+    void start() {arm.attach(pin); arm.write(90); };
+    void stop() { arm.detach(); arm.write(0); }; 
+    void toggle() {
+        enabled = !enabled;
+        if(enabled) start();
+        else stop();
+    }
 };

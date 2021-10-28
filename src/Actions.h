@@ -7,8 +7,8 @@
 
 
 #define BRIDGE_TIME 5000
-#define TURN90_LEFTTIME 1500
-#define TURN90_RIGHTTIME 1200
+#define TURN90_LEFTTIME 1200
+#define TURN90_RIGHTTIME 1000
 #define STOP_TIME 1000
 
 
@@ -27,9 +27,10 @@
 
 #define COLLECTION_TIME 5000
 
-#define NUM_MAZEACTIONS 15
+#define NUM_MAZEACTIONS 13
 #define NUM_SALINITYACTIONS 11
 #define NUM_TESTACTIONS 8
+#define NUM_SAL_ACTIONS 3
 
 
 class Robot;
@@ -55,6 +56,12 @@ struct TimedAction: public Action {
   bool isActionComplete(unsigned long timeDelta, unsigned int robotState) {
     return timeDelta >= duration;
   };
+};
+
+struct DelayAction: public TimedAction {
+  DelayAction(unsigned int duration): TimedAction(duration) {}
+
+  void doAction(Robot* robot) {};
 };
 
 struct TimedDirectionalAction: public TimedAction, public Directional {
@@ -135,18 +142,11 @@ struct ReadInclinationAction: public Action {
 };
 
 
-struct MoveSalinityArmAction: public Action {
-  enum {
-    UP,
-    DOWN
-  };
-
-  unsigned char direction;
-
-  MoveSalinityArmAction(unsigned char direction): direction(direction) {}
+struct ToggleSalinityArmAction: public Action {
+  ToggleSalinityArmAction() {}
 
   void doAction(Robot* robot);
-  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState) { return true; };
 };
 
 struct ReadSalinityAction: public Action {
@@ -156,17 +156,24 @@ struct ReadSalinityAction: public Action {
   bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
 };
 
-struct CollectAction: public Action {
-  unsigned int duration;
-  CollectAction(unsigned int duration): duration(duration) {}
-
-  void doAction(Robot* robot);
-  bool isActionComplete(unsigned long timeDelta, unsigned int robotState);
-};
 
 struct StartCollectionAction : public Action {
   StartCollectionAction() {}
 
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState) { return true; } 
+};
+
+struct StopCollectionAction: public Action {
+  StopCollectionAction() {}
+  void doAction(Robot* robot);
+  bool isActionComplete(unsigned long timeDelta, unsigned int robotState) { return true; } 
+};
+
+struct SetSpeedAction: public Action {
+  int speed;
+
+  SetSpeedAction(int speed): speed(speed) {}
   void doAction(Robot* robot);
   bool isActionComplete(unsigned long timeDelta, unsigned int robotState) { return true; } 
 };
@@ -190,8 +197,12 @@ struct ActionManager {
   static Action* COLLECT_LEFT[];
   static Action* COLLECT_RIGHT[];
 
+  static Action* TURN_TEST[];
+
   static Action* SALINITYLEFT[];
   static Action* SALINITYRIGHT[];
+
+  static Action* TAKE_SALINE[];
 
   static Action* UNIT_TEST[NUM_TESTACTIONS];
 
