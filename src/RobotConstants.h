@@ -1,32 +1,7 @@
-#ifndef ROBOTCONSTANTS_H
-#define ROBOTCONSTANTS_H
+#ifndef ROBOT_CONSTANTS_H
+#define ROBOT_CONSTANTS_H
 
-namespace RobotState {
-  enum: unsigned short {
-    FORWARD = 1 << 0,                 // 0000 0000 0000 0001
-    TURNING_LEFT = 1 << 1,            // 0000 0000 0000 0010
-    TURNING_RIGHT = 1 << 2,           // 0000 0000 0000 0100
-    REVERSING_LEFT = 1 << 3,          // 0000 0000 0000 1000
-    REVERSING_RIGHT = 1 << 4,         // 0000 0000 0001 0000
-    LEFT_COLL = 1 << 5,               // 0000 0000 0010 0000
-    RIGHT_COLL = 1 << 6,              // 0000 0000 0100 0000
-    FRONT_COLL = 1 << 7,              // 0000 0000 1000 0000
-    ALIGNED_X = 1 << 7,               // 0000 0001 0000 0000
-    ALIGNED_Y = 1 << 8,               // 0000 0010 0000 0000
-    SALINITY_ARM_UP = 1 << 9,         // 0000 0100 0000 0000
-    SALINITY_ARM_DOWN = 1 << 10,      // 0000 1000 0000 0000
-    SALINITY_ARM_MOVING = 1 << 11,    // 0001 0000 0000 0000
-    TAKING_INCLINE = 1 << 12,
-  };
-
-  // some useful bitmasks
-  const static unsigned short TURNING_MASK = TURNING_LEFT | TURNING_RIGHT;           // 0000 0000 0000 0110
-  const static unsigned short REVERSING_MASK = REVERSING_LEFT | REVERSING_RIGHT;     // 0000 0000 0001 1000
-  const static unsigned short MOVING_MASK = FORWARD | TURNING_MASK | REVERSING_MASK; // 0000 0000 0001 1111
-  // const static unsigned short COLLISION_MASK = LEFT_COLL | RIGHT_COLL;               // 0000 0000 0110 0000
-   
-};
-
+#define DEFAULT_COLLISION_THRESHOLD 30.0
 
 namespace Pins {
   enum {    
@@ -57,23 +32,60 @@ namespace Pins {
   };
 };
 
-namespace RobotUtil {
-
-template<typename T>
-void insertionSort(T array[], int size) {
-  for (int step = 1; step < size; step++) {
-    int key = array[step];
-    int j = step - 1;
-
-    while (key < array[j] && j >= 0) {
-      array[j + 1] = array[j];
-      --j;
-    }
-    array[j + 1] = key;
-  }
-}
-}
 
 
+namespace Ping {
+    static const int DELAY1 = 2; // microseconds
+    static const int DELAY2 = 10; // microseconds
+    static const float SOUND_SPEED = 0.0343f; // 343 m/s in 0.0343 cm/us
+};
+
+
+enum MovementStates: short {
+    MS_STATIONARY = 0,
+    MS_FORWARD,
+    MS_REVERSE,
+    MS_TURN_LEFT,
+    MS_TURN_RIGHT,
+    MS_REVERSE_TURN_LEFT,
+    MS_REVERSE_TURN_RIGHT,
+};
+
+namespace RobotState {
+    enum {
+        MOTOR_FL_ON = 1 << 0,         
+        MOTOR_FR_ON = 1 << 1, 
+        MOTOR_BL_ON = 1 << 2,
+        MOTOR_BR_ON = 1 << 3,
+
+        MOTOR_FL_REV = 1 << 4,
+        MOTOR_FR_REV = 1 << 5,
+        MOTOR_BL_REV = 1 << 6,
+        MOTOR_BR_REV = 1 << 7,
+
+        LEFT_COLL = 1 << 8,                
+        RIGHT_COLL = 1 << 9,              
+        FRONT_COLL = 1 << 10,   
+    };
+ 
+    constexpr int ENABLE_MOTORS_MASK = MOTOR_FL_ON | MOTOR_FR_ON | MOTOR_BL_ON | MOTOR_BR_ON;
+    constexpr int REVERSE_MOTORS_MASK =  MOTOR_FL_REV | MOTOR_FR_REV | MOTOR_BL_REV | MOTOR_BR_REV; 
+    constexpr int ANY_COLLISION_MASK = LEFT_COLL | RIGHT_COLL | FRONT_COLL;
+};
+
+
+enum MotorEnum {
+    FL = 0,
+    FR = 1,
+    BL = 2,
+    BR = 3
+};
+
+namespace Speeds {
+    const int LEFT_FORWARD = 113;
+    const int LEFT_REVERSE = 75;
+    const int RIGHT_FORWARD = 75;
+    const int RIGHT_REVERSE = 113;
+};
 
 #endif
