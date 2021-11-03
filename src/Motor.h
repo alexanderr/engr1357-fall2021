@@ -37,47 +37,64 @@ public:
     _controller.detach();
   }
 
-  void setSpeed(byte mspeed){
+  void set_speed(byte mspeed){
     m_speed = mspeed;
     _controller.write(m_active ? m_speed : 0);
+  }
+
+  void set_active(bool active) {
+      if(active)
+        enable();
+      else
+        disable();
   }
 
 
   // Variadic helper functions
   
-  static void multiEnable(Motor& m){
+  static void enable_many(Motor& m){
     Serial.println("enable:" + String(m.m_pin));
     m.enable();
   }
 
   template<typename... Args>
-  static void multiEnable(Motor& first, Args... args){
+  static void enable_many(Motor& first, Args... args){
     Serial.println("enable:" + String(first.m_pin));
     first.enable();
-    multiEnable(args...);
+    enable_many(args...);
   }
 
-  static void multiDisable(Motor& m){
+  static void disable_many(Motor& m){
     m.disable();
   }
 
   template<typename... Args>
-  static void multiDisable(Motor& first, Args... args){
+  static void disable_many(Motor& first, Args... args){
     first.disable();
-    multiDisable(args...);
+    disable_many(args...);
   }
 
-  static void multiSetSpeed(byte mspeed, Motor& m){
-    m.setSpeed(mspeed);
+  static void set_speed_many(byte mspeed, Motor& m){
+    m.set_speed(mspeed);
   }
 
   template<typename... Args>
-  static void multiSetSpeed(byte mspeed, Motor& first, Args... args){
-    first.setSpeed(mspeed);
-    multiSetSpeed(mspeed, args...);
+  static void set_speed_many(byte mspeed, Motor& first, Args... args){
+    first.set_speed(mspeed);
+    set_speed_many(mspeed, args...);
   }
 
-  
+  static void set_active_many(bool active, Motor& m){
+    m.set_active(active);
+  }
+
+  template<typename... Args>
+  static void set_active_many(bool active, Motor& first, Args... args){
+    first.set_active(mspeed);
+    set_active_many(mspeed, args...);
+  }
+
+
 };
 
 #endif
