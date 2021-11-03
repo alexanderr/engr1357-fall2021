@@ -43,11 +43,14 @@ Keypad keypad = Keypad(makeKeymap(KeypadConstants::KEYS),
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 
+// Fires an event, if the current action is currently listening to this event,
+// it will complete it and start the next action.
 void fire_event(int event) {
     if(blocking_event == event)
         blocking_event = Events::NONE;
 }
 
+// Loop that controls the state of the motors.
 bool motor_loop(void*) {
     motor_state = MS_STATIONARY;
 
@@ -107,6 +110,8 @@ bool motor_loop(void*) {
 
 }
 
+
+ // Loop that controls the ping sensors. Only 1 ping sensor is updated every tick.
 bool ping_loop(void*) {
     static int i = 0;
     static int next;
@@ -150,6 +155,7 @@ bool ping_loop(void*) {
     return true;
 }
 
+// Loop that controls the actions that are queued up in the actionList.
 bool action_loop(void*) {
     if(current_action_list == nullptr)
         return true;
@@ -172,12 +178,14 @@ bool action_loop(void*) {
     return true;
 }
 
+// Inclinometer event loop that should take a reading and fire an event if there is a change in inclination.
 bool inclinometer_loop(void*) {
     static int reading = 0;
     // TODO: take reading
     return true;
 }
 
+// Callback for keypad
 void on_key_pressed(char key) {
     switch(key) {
         case 'A': break;
@@ -185,6 +193,8 @@ void on_key_pressed(char key) {
     }
 }
 
+
+// Keypad loop that checks for input and calls any callback functions per key.
 bool keypad_loop(void*) {
     if(!keypad.getKeys())
         return true; // No key states changed.
