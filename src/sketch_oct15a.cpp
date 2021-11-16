@@ -10,7 +10,6 @@
 #include <Motor.h>
 
 int requested_motor_state = -1;
-int tick = 0;
 int motor_state = MS_STATIONARY; // Don't modify this directly, use requested_motor_state
 unsigned int robot_state = 0;    // Robot state
 
@@ -99,67 +98,49 @@ bool motor_loop(void *)
     return true;
 }
 
+
+
+bool ping(int trig, int echo, int coll_flag, float collision_threshold, float& distance, int on_event, int off_event)
+{
+    static const int PING_BUFFER = 5;
+    static float buffer[PING_BUFFER];
+    for(int i = 0; i < PING_BUFFER; ++i){
+        buffer[i] =  Ping::get_ping(trig, echo);
+    }
+    RobotUtil::insertionSort(buffer, PING_BUFFER);
+    distance = buffer[PING_BUFFER / 2];
+    
+    if(distance > 0){
+        if (distance < collision_threshold) robot_state |= coll_flag;
+        else robot_state &= ~coll_flag;
+        fire_event((robot_state & coll_flag) ? on_event : off_event);
+    }
+}
+
 // Loop that controls the ping sensors. Only 1 ping sensor is updated every tick.
 bool ping_loop(void *)
 {
+    static int i = 0;
     static int next;
 
-    next = tick % 3;
+    next = i % 3;
     switch (next)
     {
-    case 0:
-        distanceF = Ping::get_ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO);
-        Serial.println("FRONT: " + String(distanceF));
-        if (distanceF < DEFAULT_COLLISION_THRESHOLD && distanceF != 0 )
-            robot_state |= RobotState::FRONT_COLL;
-        else
-            robot_state &= ~RobotState::FRONT_COLL;
-
-        break;
-    case 1:
-        distanceL = Ping::get_ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO);
-        Serial.println("LEFT: " + String(distanceL));
-
-        if (distanceL < LEFT_COLLISION_THRESHOLD  && distanceL != 0 )
-            robot_state |= RobotState::LEFT_COLL;
-        else
-            robot_state &= ~RobotState::LEFT_COLL;
-
-        break;
-    case 2:
-        distanceR = Ping::get_ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO);
-        Serial.println("RIGHT: " + String(distanceR));
-
-        if (distanceR < RIGHT_COLLISION_THRESHOLD  && distanceR != 0 )
-            robot_state |= RobotState::RIGHT_COLL;
-        else
-            robot_state &= ~RobotState::RIGHT_COLL;
-
-        break;
+        case 0:
+            ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO, RobotState::FRONT_COLL, DEFAULT_COLLISION_THRESHOLD, distanceF, 
+                Events::FRONT_COLLISION, Events::NO_FRONT_COLLISION);
+            break;
+        case 1:
+            ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO, RobotState::LEFT_COLL, LEFT_COLLISION_THRESHOLD, distanceL, 
+                Events::LEFT_COLLISION, Events::NO_LEFT_COLLISION);
+            break;
+        case 2:
+            ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO, RobotState::RIGHT_COLL, RIGHT_COLLISION_THRESHOLD, distanceR, 
+                Events::RIGHT_COLLISION, Events::NO_RIGHT_COLLISION);
+            break;
     }
 
-    if (robot_state & RobotState::LEFT_COLL)
-    {
-        fire_event(Events::LEFT_COLLISION);
-    }
-    else
-    {
-        fire_event(Events::NO_LEFT_COLLISION);
-    }
-    if (robot_state & RobotState::RIGHT_COLL)
-    {
-        fire_event(Events::RIGHT_COLLISION);
-    }
-    else
-    {
-        fire_event(Events::NO_RIGHT_COLLISION);
-    }
-    if (robot_state & RobotState::FRONT_COLL)
-    {
-        fire_event(Events::FRONT_COLLISION);
-    }
-
-    ++tick;
+    ++i;
     return true;
 }
 
@@ -169,12 +150,11 @@ bool action_loop(void *)
     if (current_action_list == nullptr)
         return true;
 
-    if(current_action_list[action_index].action == Actions::TERMINATE)
+    if((action_index >= 0) && ((current_action_list[action_index].action == Actions::TERMINATE)))
         return true;
 
     if (!blocking_event && !blocking_duration)
-    {   
-        Serial.println(String("action index:") + action_index);
+    {
         ++action_index;
         Actions::FunctionTable[current_action_list[action_index].action]();
         blocking_event = current_action_list[action_index].endEvent;
@@ -197,7 +177,8 @@ bool action_loop(void *)
 bool inclinometer_loop(void *)
 {
     static int reading = 0;
-    // TODO: take reading
+    // analog pin 7
+    
     return true;
 }
 
@@ -206,20 +187,20 @@ void on_key_pressed(char key)
 {
     Serial.println(String("key_pressed") + key);
 
-    switch (key)
-    {
-    case 'A':
-        requested_motor_state = MS_STATIONARY;
-        break;
-    case 'B':
-        requested_motor_state = MS_FORWARD;
-        break;
-    case 'C':
-        requested_motor_state = MS_REVERSE;
-        break;
-    default:
-        break;
-    }
+    // switch (key)
+    // {
+    // case 'A':
+    //     requested_motor_state = MS_STATIONARY;
+    //     break;
+    // case 'B':
+    //     requested_motor_state = MS_FORWARD;
+    //     break;
+    // case 'C':
+    //     requested_motor_state = MS_REVERSE;
+    //     break;
+    // default:
+    //     break;
+    // }
 }
 
 // Keypad loop that checks for input and calls any callback functions per key.
@@ -252,9 +233,31 @@ bool keypad_loop(void *)
 
 bool lcd_loop(void *)
 {
+    static int i = 0;
+
+    static char row1[16]{};
+    static char row2[16]{};
+
     lcd.clear();
     lcd.home();
-    lcd.println(lcd_message);
+
+    strcpy(row1, "F: ");
+    dtostrf(distanceF, 11, 4, row1 + 2);
+
+    if(i % 2) {
+        strcpy(row2, "L: ");
+        dtostrf(distanceL, 11, 4, row2 + 3);
+    }
+    else {
+        strcpy(row2, "R: ");
+        dtostrf(distanceR, 11, 4, row2 + 3);
+    }
+
+    lcd.println(row1);
+    lcd.setCursor(0, 1);
+    lcd.println(row2);
+
+    ++i;
     return true;
 }
 
@@ -272,9 +275,9 @@ void setup()
 
     timer.every(20, action_loop);
     timer.every(20, motor_loop);
-    timer.every(60, ping_loop);
-    //timer.every(80, keypad_loop);
-    //timer.every(200, lcd_loop);
+    timer.every(75, ping_loop);
+    timer.every(150, keypad_loop);
+    timer.every(500, lcd_loop);
     requested_motor_state = MS_FORWARD;
     delay(2000);
 }

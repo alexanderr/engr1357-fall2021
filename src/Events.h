@@ -14,6 +14,7 @@ namespace Events {
         ACTION_TIMEOUT = 7,
         NO_LEFT_COLLISION = 8,
         NO_RIGHT_COLLISION = 9,
+        NO_FRONT_COLLISION = 10,
     };
 };
 

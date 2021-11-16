@@ -3,9 +3,9 @@
 
 #define DEFAULT_COLLISION_THRESHOLD 30.0
 #define LEFT_COLLISION_THRESHOLD 40.0
-#define RIGHT_COLLISION_THRESHOLD 30.0
+#define RIGHT_COLLISION_THRESHOLD 40.0
 #define DEFAULT_TURN_LEFT_DURATION 765
-#define DEFAULT_TURN_RIGHT_DURTION 765
+#define DEFAULT_TURN_RIGHT_DURTION 785
 
 namespace Pins {
   enum {    
@@ -26,8 +26,6 @@ namespace Pins {
 
     PINGL_ECHO = 8,
     PINGL_TRIG = 7,
-
-    INCLINOMETER = 0,
 
     SALINITY_SENSOR = 14,
 
@@ -86,7 +84,7 @@ enum MotorEnum {
 };
 
 namespace Speeds {
-    const int LEFT_FORWARD = 114;
+    const int LEFT_FORWARD = 115;
     const int LEFT_REVERSE = 75;
     const int RIGHT_FORWARD = 75;
     const int RIGHT_REVERSE = 114;
