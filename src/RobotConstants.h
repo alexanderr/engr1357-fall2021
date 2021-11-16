@@ -5,13 +5,13 @@
 
 namespace Pins {
   enum {    
-    M_FRONTRIGHT = 9,
-    M_BACKRIGHT = 5,
+    // M_FRONTRIGHT = 9,
 
-    M_FRONTLEFT = 10,
-    M_BACKLEFT = 6,
+    // M_FRONTLEFT = 10,
+    M_BACKLEFT = 9,
+    M_BACKRIGHT = 11,
     
-    COLLECTOR_SERVO = 11,
+    COLLECTOR_SERVO = 13,
     SALINITY_ARM = 3,
 
     PINGF_ECHO = 29,
@@ -75,10 +75,10 @@ namespace RobotState {
 
 
 enum MotorEnum {
-    FL = 0,
-    FR = 1,
-    BL = 2,
-    BR = 3
+    // FL = 0,
+    // FR = 1,
+    BL = 0,
+    BR = 1,
 };
 
 namespace Speeds {

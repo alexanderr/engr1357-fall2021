@@ -28,9 +28,9 @@ float distanceR = -1;
 
 Timer<8, millis> timer;
 
-Motor motors[4] = {
-    Motor(Pins::M_FRONTLEFT),
-    Motor(Pins::M_FRONTRIGHT),
+Motor motors[2] = {
+    // Motor(Pins::M_FRONTLEFT),
+    // Motor(Pins::M_FRONTRIGHT),
     Motor(Pins::M_BACKLEFT),
     Motor(Pins::M_BACKRIGHT),
 };
@@ -53,6 +53,8 @@ void fire_event(int event) {
 // Loop that controls the state of the motors.
 bool motor_loop(void*) {
     motor_state = MS_STATIONARY;
+
+    Serial.println(String("motor_loop: ") + String(requested_motor_state));
 
     switch (requested_motor_state)
     {
@@ -85,24 +87,24 @@ bool motor_loop(void*) {
 
     if((robot_state & RobotState::ENABLE_MOTORS_MASK) == RobotState::ENABLE_MOTORS_MASK) {
         // Enable all
-        Motor::enable_many(motors[FL], motors[FR], motors[BL], motors[BR]);
+        Motor::enable_many(motors[BL], motors[BR]);
     }
     else if(!(robot_state & RobotState::ENABLE_MOTORS_MASK)) {
         // Disable all
-        Motor::disable_many(motors[FL], motors[FR], motors[BL], motors[BR]);
+        Motor::disable_many(motors[BL], motors[BR]);
     }
     else {
         // Set each motor individually.
-        motors[FL].set_active(robot_state & RobotState::MOTOR_FL_ON);
-        motors[FR].set_active(robot_state & RobotState::MOTOR_FR_ON);
+        // motors[FL].set_active(robot_state & RobotState::MOTOR_FL_ON);
+        // motors[FR].set_active(robot_state & RobotState::MOTOR_FR_ON);
         motors[BL].set_active(robot_state & RobotState::MOTOR_BL_ON);
         motors[BR].set_active(robot_state & RobotState::MOTOR_BR_ON);
     }
 
 
-    motors[FL].set_speed((robot_state & RobotState::MOTOR_FL_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
-    motors[FR].set_speed((robot_state & RobotState::MOTOR_FR_REV) ? Speeds::RIGHT_REVERSE : Speeds::RIGHT_FORWARD);
-    motors[BL].set_speed((robot_state & RobotState::MOTOR_BR_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
+    // motors[FL].set_speed((robot_state & RobotState::MOTOR_FL_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
+    // motors[FR].set_speed((robot_state & RobotState::MOTOR_FR_REV) ? Speeds::RIGHT_REVERSE : Speeds::RIGHT_FORWARD);
+    motors[BL].set_speed((robot_state & RobotState::MOTOR_BL_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
     motors[BR].set_speed((robot_state & RobotState::MOTOR_BR_REV) ? Speeds::RIGHT_REVERSE : Speeds::RIGHT_FORWARD);
 
 
@@ -187,8 +189,12 @@ bool inclinometer_loop(void*) {
 
 // Callback for keypad
 void on_key_pressed(char key) {
+    Serial.println(String("key_pressed") + key);
+
     switch(key) {
-        case 'A': break;
+        case 'A': requested_motor_state = MS_STATIONARY; break;
+        case 'B': requested_motor_state = MS_FORWARD; break;
+        case 'C': requested_motor_state = MS_REVERSE; break;
         default: break;
     }
 }
@@ -222,6 +228,7 @@ bool lcd_loop(void*) {
 }
 
 void setup() {
+    Serial.begin(9600);
     lcd.begin(16, 2);
     lcd.backlight();
 
@@ -231,6 +238,8 @@ void setup() {
     timer.every(60, ping_loop);
     timer.every(80, keypad_loop);
     timer.every(200, lcd_loop);
+    delay(3000);
+    requested_motor_state = MS_FORWARD;
 }
 
 

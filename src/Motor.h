@@ -37,8 +37,8 @@ public:
     _controller.detach();
   }
 
-  void set_speed(byte mspeed){
-    m_speed = mspeed;
+  void set_speed(byte speed){
+    m_speed = speed;
     _controller.write(m_active ? m_speed : 0);
   }
 
@@ -90,8 +90,8 @@ public:
 
   template<typename... Args>
   static void set_active_many(bool active, Motor& first, Args... args){
-    first.set_active(mspeed);
-    set_active_many(mspeed, args...);
+    first.set_active(active);
+    set_active_many(active, args...);
   }
 
 
