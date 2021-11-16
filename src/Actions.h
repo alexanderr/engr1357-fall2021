@@ -15,6 +15,7 @@ namespace Actions {
         MOVE_R,
         TURN_L,
         TURN_R,
+        TERMINATE,
         MAX_ACTIONS
     };
 
@@ -22,7 +23,8 @@ namespace Actions {
     void move_f() { requested_motor_state = MS_FORWARD; }
     void move_r() { requested_motor_state = MS_REVERSE; }
     void turn_l() { requested_motor_state = MS_TURN_LEFT; }
-    void turn_r() { requested_motor_state = MS_TURN_LEFT; }
+    void turn_r() { requested_motor_state = MS_TURN_RIGHT; }
+    void terminate() {}
 
     ActionFunction FunctionTable[MAX_ACTIONS] = {
         &dont_move,
@@ -30,6 +32,7 @@ namespace Actions {
         &move_r,
         &turn_l,
         &turn_r,
+        &terminate,
     };
 
 };

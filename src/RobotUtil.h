@@ -13,7 +13,7 @@ namespace Ping {
         delayMicroseconds(DELAY2); //a short break to let the operation happen
         digitalWrite(trig, LOW); //turn off the Trig pin to end the sound wave output
         
-        float duration = pulseIn(echo, HIGH); //sensor the sound wave reflection time
+        float duration = pulseIn(echo, HIGH, 10000); //sensor the sound wave reflection time
         float distance  = (duration / 2) * SOUND_SPEED; // distance in centimeters.
         return distance;
     };

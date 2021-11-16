@@ -3,9 +3,11 @@
 #include "Actions.h"
 
 // TODO: list of actions w/o hardcoding.
-const Action maze_mode[] = {
+Action maze_mode[] = {
     {Actions::DONT_MOVE, Events::NONE, 0},
-    {Actions::MOVE_F, Events::FRONT_COLLISION, 0},
+    {Actions::MOVE_F, Events::NO_RIGHT_COLLISION},
+    {Actions::DONT_MOVE, Events::NONE, 0},
+    {Actions::TERMINATE, Events::NONE, 0},
 };
 
 #endif
