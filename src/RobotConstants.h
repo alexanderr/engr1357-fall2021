@@ -8,8 +8,8 @@ namespace Pins {
     // M_FRONTRIGHT = 9,
 
     // M_FRONTLEFT = 10,
-    M_BACKLEFT = 9,
-    M_BACKRIGHT = 11,
+    M_BACKLEFT = 6,
+    M_BACKRIGHT = 10,
     
     COLLECTOR_SERVO = 13,
     SALINITY_ARM = 3,

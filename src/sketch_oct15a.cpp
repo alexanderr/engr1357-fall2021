@@ -85,25 +85,9 @@ bool motor_loop(void*) {
     motor_state = requested_motor_state;
     requested_motor_state = -1;
 
-    if((robot_state & RobotState::ENABLE_MOTORS_MASK) == RobotState::ENABLE_MOTORS_MASK) {
-        // Enable all
-        Motor::enable_many(motors[BL], motors[BR]);
-    }
-    else if(!(robot_state & RobotState::ENABLE_MOTORS_MASK)) {
-        // Disable all
-        Motor::disable_many(motors[BL], motors[BR]);
-    }
-    else {
-        // Set each motor individually.
-        // motors[FL].set_active(robot_state & RobotState::MOTOR_FL_ON);
-        // motors[FR].set_active(robot_state & RobotState::MOTOR_FR_ON);
-        motors[BL].set_active(robot_state & RobotState::MOTOR_BL_ON);
-        motors[BR].set_active(robot_state & RobotState::MOTOR_BR_ON);
-    }
-
-
-    // motors[FL].set_speed((robot_state & RobotState::MOTOR_FL_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
-    // motors[FR].set_speed((robot_state & RobotState::MOTOR_FR_REV) ? Speeds::RIGHT_REVERSE : Speeds::RIGHT_FORWARD);
+    motors[BL].set_active(robot_state & RobotState::MOTOR_BL_ON);
+    motors[BR].set_active(robot_state & RobotState::MOTOR_BR_ON);
+    
     motors[BL].set_speed((robot_state & RobotState::MOTOR_BL_REV) ? Speeds::LEFT_REVERSE : Speeds::LEFT_FORWARD);
     motors[BR].set_speed((robot_state & RobotState::MOTOR_BR_REV) ? Speeds::RIGHT_REVERSE : Speeds::RIGHT_FORWARD);
 
