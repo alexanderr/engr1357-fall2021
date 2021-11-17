@@ -44,6 +44,7 @@ namespace Actions
     ActionFunction FunctionTable[MAX_ACTIONS] = {
         &dont_move,
         &move_f,
+        &move_fw,
         &move_r,
         &turn_l,
         &turn_r,

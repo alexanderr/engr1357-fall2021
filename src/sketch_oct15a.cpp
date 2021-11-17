@@ -63,6 +63,18 @@ bool motor_loop(void *)
 {
     motor_state = MS_STATIONARY;
 
+    // if (distanceR < 10 && distanceR > 0) {
+    //     requested_motor_state = MS_TURN_LEFT;
+    // } else if (distanceR > 10 && distanceR < 40) {
+    //      requested_motor_state = MS_FORWARD;
+    // }
+
+    // if (distanceL < 10 && distanceL > 0) {
+    //     requested_motor_state = MS_TURN_RIGHT;
+    // } else if (distanceR > 10 && distanceR < 40) {
+    //      requested_motor_state = MS_FORWARD;
+    // }
+
     switch (requested_motor_state)
     {
     case -1:
@@ -127,6 +139,7 @@ bool ping(int trig, int echo, int coll_flag, float collision_threshold, float &d
             robot_state &= ~coll_flag;
         fire_event((robot_state & coll_flag) ? on_event : off_event);
     }
+    return distance;
 }
 
 // Loop that controls the ping sensors. Only 1 ping sensor is updated every tick.
