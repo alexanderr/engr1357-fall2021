@@ -6,6 +6,7 @@
 
 extern int requested_motor_state;
 extern Chomper chomper;
+extern bool object_avoidance;
 
 namespace Actions
 {
@@ -20,6 +21,8 @@ namespace Actions
         TURN_R,
         CHOMP_ON,
         CHOMP_OFF,
+        OBJ_AV_OFF,
+        OBJ_AV_ON,
         TERMINATE,
         MAX_ACTIONS
     };
@@ -39,17 +42,26 @@ namespace Actions
         requested_motor_state = MS_STATIONARY;
         chomper.m_chomping = false;
     }
+
+    void obj_avoidance_off() {
+        object_avoidance = false;
+    }
+    void obj_avoidance_on() {
+        object_avoidance = true;
+    }
+
     void terminate() {}
 
     ActionFunction FunctionTable[MAX_ACTIONS] = {
         &dont_move,
         &move_f,
-        &move_fw,
         &move_r,
         &turn_l,
         &turn_r,
         &chomp_on,
         &chomp_off,
+        &obj_avoidance_off,
+        &obj_avoidance_on,
         &terminate,
     };
 

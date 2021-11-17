@@ -85,12 +85,11 @@ enum MotorEnum {
 };
 
 namespace Speeds {
-     int LEFT_FORWARD = 115; // 107
-     int RIGHT_FORWARD = 75; // 81
+  int LEFT_FORWARD = 115; // 107
+  int RIGHT_FORWARD = 70; //75 //72
 
-    const int LEFT_REVERSE = 75;
-    const int RIGHT_FORWARD = 70; //75 //72
-    const int RIGHT_REVERSE = 114; //115 //114
+  int LEFT_REVERSE = 75;
+  int RIGHT_REVERSE = 114; //115 //114
 };
 
 #endif

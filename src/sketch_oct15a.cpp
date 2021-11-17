@@ -22,6 +22,8 @@ int blocking_event = Events::NONE;
 unsigned long blocking_duration = 0;
 unsigned long last_action_time = 0;
 
+bool object_avoidance = false;
+
 String lcd_message = "test";
 
 float distanceF = -1;
@@ -61,19 +63,18 @@ bool chomp_loop(void*) {
 // Loop that controls the state of the motors.
 bool motor_loop(void *)
 {
-    motor_state = MS_STATIONARY;
-
-    // if (distanceR < 10 && distanceR > 0) {
-    //     requested_motor_state = MS_TURN_LEFT;
-    // } else if (distanceR > 10 && distanceR < 40) {
-    //      requested_motor_state = MS_FORWARD;
-    // }
-
-    // if (distanceL < 10 && distanceL > 0) {
-    //     requested_motor_state = MS_TURN_RIGHT;
-    // } else if (distanceR > 10 && distanceR < 40) {
-    //      requested_motor_state = MS_FORWARD;
-    // }
+    if(object_avoidance) {
+        if (distanceR < 10 && distanceR > 0) {
+            requested_motor_state = MS_TURN_LEFT;
+        } else if (distanceR > 10 && distanceR < 40) {
+            requested_motor_state = MS_FORWARD;
+        }
+        if (distanceL < 10 && distanceL > 0) {
+            requested_motor_state = MS_TURN_RIGHT;
+        } else if (distanceR > 10 && distanceR < 40) {
+            requested_motor_state = MS_FORWARD;
+        }
+    }
 
     switch (requested_motor_state)
     {
