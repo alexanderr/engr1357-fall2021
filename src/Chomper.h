@@ -1,3 +1,5 @@
+#ifndef CHOMPER_H
+#define CHOMPER_H
 #include <Servo.h>
 #include "Arduino.h"
 
@@ -41,3 +43,4 @@ struct Chomper {
   }
 
 };
+#endif
