@@ -178,7 +178,6 @@ bool inclinometer_loop(void *)
 {
     static int reading = 0;
     // analog pin 7
-    
     return true;
 }
 
@@ -187,20 +186,32 @@ void on_key_pressed(char key)
 {
     Serial.println(String("key_pressed") + key);
 
-    // switch (key)
-    // {
-    // case 'A':
-    //     requested_motor_state = MS_STATIONARY;
-    //     break;
-    // case 'B':
-    //     requested_motor_state = MS_FORWARD;
-    //     break;
-    // case 'C':
-    //     requested_motor_state = MS_REVERSE;
-    //     break;
-    // default:
-    //     break;
-    // }
+    switch (key)
+    {
+    case '1':
+        requested_motor_state = MS_STATIONARY;
+        break;
+    case '2':
+        requested_motor_state = MS_FORWARD;
+        break;
+    case '3':
+        requested_motor_state = MS_REVERSE;
+        break;
+    case '4':
+        Speeds::LEFT_FORWARD += 1;
+        break;
+    case '5':
+        Speeds::LEFT_FORWARD -= 1;
+        break;
+    case '7':
+        Speeds::RIGHT_FORWARD += 1;
+        break;
+    case '8':
+        Speeds::RIGHT_FORWARD -= 1;
+        break;
+    default:
+        break;
+    }
 }
 
 // Keypad loop that checks for input and calls any callback functions per key.
@@ -235,27 +246,31 @@ bool lcd_loop(void *)
 {
     static int i = 0;
 
-    static char row1[16]{};
-    static char row2[16]{};
+    // lcd.clear();
+    // lcd.home();
 
-    lcd.clear();
-    lcd.home();
+    // static char row1[16]{};
+    // static char row2[16]{};
 
-    strcpy(row1, "F: ");
-    dtostrf(distanceF, 11, 4, row1 + 2);
+    // strcpy(row1, "F: ");
+    // dtostrf(distanceF, 11, 4, row1 + 2);
 
-    if(i % 2) {
-        strcpy(row2, "L: ");
-        dtostrf(distanceL, 11, 4, row2 + 3);
-    }
-    else {
-        strcpy(row2, "R: ");
-        dtostrf(distanceR, 11, 4, row2 + 3);
-    }
+    // if(i % 2) {
+    //     strcpy(row2, "L: ");
+    //     dtostrf(distanceL, 11, 4, row2 + 3);
+    // }
+    // else {
+    //     strcpy(row2, "R: ");
+    //     dtostrf(distanceR, 11, 4, row2 + 3);
+    // }
 
-    lcd.println(row1);
+    // lcd.println(row1);
+    // lcd.setCursor(0, 1);
+    // lcd.println(row2);
+
+    lcd.println(String("LFT SPD:") + Speeds::LEFT_FORWARD);
     lcd.setCursor(0, 1);
-    lcd.println(row2);
+    lcd.println(String("RGT SPD:") + Speeds::RIGHT_FORWARD);
 
     ++i;
     return true;
@@ -277,9 +292,7 @@ void setup()
     timer.every(20, motor_loop);
     timer.every(75, ping_loop);
     timer.every(150, keypad_loop);
-    timer.every(500, lcd_loop);
-    requested_motor_state = MS_FORWARD;
-    delay(2000);
+    timer.every(250, lcd_loop);
 }
 
 void loop()
