@@ -8,9 +8,12 @@
 #include "Actions.h"
 #include "ActionLists.h"
 #include <Motor.h>
+#include <Chomper.h>
 
 int requested_motor_state = -1;
+
 int motor_state = MS_STATIONARY; // Don't modify this directly, use requested_motor_state
+int chomp_state = false;
 unsigned int robot_state = 0;    // Robot state
 
 Action *current_action_list = maze_mode;
@@ -34,6 +37,8 @@ Motor motors[2] = {
     Motor(Pins::M_BACKRIGHT),
 };
 
+Chomper chomper = Chomper(Pins::M_CHOMP);
+
 Keypad keypad = Keypad(makeKeymap(KeypadConstants::KEYS),
                        KeypadConstants::ROW_PINS, KeypadConstants::COL_PINS,
                        KEYPAD_ROWS, KEYPAD_COLS);
@@ -46,6 +51,11 @@ void fire_event(int event)
 {
     if (blocking_event == event)
         blocking_event = Events::NONE;
+}
+
+bool chomp_loop(void*) {
+    chomper.chomp(millis());
+    return true;
 }
 
 // Loop that controls the state of the motors.
@@ -98,21 +108,23 @@ bool motor_loop(void *)
     return true;
 }
 
-
-
-bool ping(int trig, int echo, int coll_flag, float collision_threshold, float& distance, int on_event, int off_event)
+bool ping(int trig, int echo, int coll_flag, float collision_threshold, float &distance, int on_event, int off_event)
 {
     static const int PING_BUFFER = 5;
     static float buffer[PING_BUFFER];
-    for(int i = 0; i < PING_BUFFER; ++i){
-        buffer[i] =  Ping::get_ping(trig, echo);
+    for (int i = 0; i < PING_BUFFER; ++i)
+    {
+        buffer[i] = Ping::get_ping(trig, echo);
     }
     RobotUtil::insertionSort(buffer, PING_BUFFER);
     distance = buffer[PING_BUFFER / 2];
-    
-    if(distance > 0){
-        if (distance < collision_threshold) robot_state |= coll_flag;
-        else robot_state &= ~coll_flag;
+
+    if (distance > 0)
+    {
+        if (distance < collision_threshold)
+            robot_state |= coll_flag;
+        else
+            robot_state &= ~coll_flag;
         fire_event((robot_state & coll_flag) ? on_event : off_event);
     }
 }
@@ -126,18 +138,18 @@ bool ping_loop(void *)
     next = i % 3;
     switch (next)
     {
-        case 0:
-            ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO, RobotState::FRONT_COLL, DEFAULT_COLLISION_THRESHOLD, distanceF, 
-                Events::FRONT_COLLISION, Events::NO_FRONT_COLLISION);
-            break;
-        case 1:
-            ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO, RobotState::LEFT_COLL, LEFT_COLLISION_THRESHOLD, distanceL, 
-                Events::LEFT_COLLISION, Events::NO_LEFT_COLLISION);
-            break;
-        case 2:
-            ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO, RobotState::RIGHT_COLL, RIGHT_COLLISION_THRESHOLD, distanceR, 
-                Events::RIGHT_COLLISION, Events::NO_RIGHT_COLLISION);
-            break;
+    case 0:
+        ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO, RobotState::FRONT_COLL, DEFAULT_COLLISION_THRESHOLD, distanceF,
+             Events::FRONT_COLLISION, Events::NO_FRONT_COLLISION);
+        break;
+    case 1:
+        ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO, RobotState::LEFT_COLL, LEFT_COLLISION_THRESHOLD, distanceL,
+             Events::LEFT_COLLISION, Events::NO_LEFT_COLLISION);
+        break;
+    case 2:
+        ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO, RobotState::RIGHT_COLL, RIGHT_COLLISION_THRESHOLD, distanceR,
+             Events::RIGHT_COLLISION, Events::NO_RIGHT_COLLISION);
+        break;
     }
 
     ++i;
@@ -150,7 +162,7 @@ bool action_loop(void *)
     if (current_action_list == nullptr)
         return true;
 
-    if((action_index >= 0) && ((current_action_list[action_index].action == Actions::TERMINATE)))
+    if ((action_index >= 0) && ((current_action_list[action_index].action == Actions::TERMINATE)))
         return true;
 
     if (!blocking_event && !blocking_duration)
@@ -178,7 +190,7 @@ bool inclinometer_loop(void *)
 {
     static int reading = 0;
     // analog pin 7
-    
+
     return true;
 }
 
@@ -187,20 +199,20 @@ void on_key_pressed(char key)
 {
     Serial.println(String("key_pressed") + key);
 
-    // switch (key)
-    // {
-    // case 'A':
-    //     requested_motor_state = MS_STATIONARY;
-    //     break;
-    // case 'B':
-    //     requested_motor_state = MS_FORWARD;
-    //     break;
-    // case 'C':
-    //     requested_motor_state = MS_REVERSE;
-    //     break;
-    // default:
-    //     break;
-    // }
+    switch (key)
+    {
+    case 'A':
+        current_action_list = maze_mode;
+        break;
+    case 'B':
+        current_action_list = chomp_mode;
+        break;
+    case 'C':
+        current_action_list = salinity_mode;
+        break;
+    default:
+        break;
+    }
 }
 
 // Keypad loop that checks for input and calls any callback functions per key.
@@ -244,11 +256,13 @@ bool lcd_loop(void *)
     strcpy(row1, "F: ");
     dtostrf(distanceF, 11, 4, row1 + 2);
 
-    if(i % 2) {
+    if (i % 2)
+    {
         strcpy(row2, "L: ");
         dtostrf(distanceL, 11, 4, row2 + 3);
     }
-    else {
+    else
+    {
         strcpy(row2, "R: ");
         dtostrf(distanceR, 11, 4, row2 + 3);
     }

@@ -9,11 +9,10 @@
 
 namespace Pins {
   enum {    
-    // M_FRONTRIGHT = 9,
-
-    // M_FRONTLEFT = 10,
     M_BACKLEFT = 6,
     M_BACKRIGHT = 10,
+
+    M_CHOMP = 11,
     
     COLLECTOR_SERVO = 13,
     SALINITY_ARM = 3,
@@ -67,7 +66,9 @@ namespace RobotState {
 
         LEFT_COLL = 1 << 8,                
         RIGHT_COLL = 1 << 9,              
-        FRONT_COLL = 1 << 10,   
+        FRONT_COLL = 1 << 10,  
+
+        CHOMPER_ON = 1 << 11, 
     };
  
     constexpr int ENABLE_MOTORS_MASK = MOTOR_FL_ON | MOTOR_FR_ON | MOTOR_BL_ON | MOTOR_BR_ON;
