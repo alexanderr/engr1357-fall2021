@@ -11,6 +11,10 @@ namespace Events {
         RIGHT_COLLISION = 4,
         ANY_COLLISION = 5,
         INCLINE_CHANGE = 6,
+        ACTION_TIMEOUT = 7,
+        NO_LEFT_COLLISION = 8,
+        NO_RIGHT_COLLISION = 9,
+        NO_FRONT_COLLISION = 10,
     };
 };
 

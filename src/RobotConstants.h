@@ -2,28 +2,29 @@
 #define ROBOT_CONSTANTS_H
 
 #define DEFAULT_COLLISION_THRESHOLD 30.0
+#define LEFT_COLLISION_THRESHOLD 40.0
+#define RIGHT_COLLISION_THRESHOLD 40.0
+#define DEFAULT_TURN_LEFT_DURATION 800
+#define DEFAULT_TURN_RIGHT_DURTION 820
 
 namespace Pins {
   enum {    
-    // M_FRONTRIGHT = 9,
-
-    // M_FRONTLEFT = 10,
     M_BACKLEFT = 6,
     M_BACKRIGHT = 10,
+
+    M_CHOMP = 11,
     
     COLLECTOR_SERVO = 13,
     SALINITY_ARM = 3,
 
-    PINGF_ECHO = 29,
-    PINGF_TRIG = 27,
+    PINGF_ECHO = 51,
+    PINGF_TRIG = 53,
 
-    PINGR_TRIG = 23,
-    PINGR_ECHO = 25,
+    PINGR_TRIG = 31,
+    PINGR_ECHO = 29,
 
-    PINGL_ECHO = 13,
-    PINGL_TRIG = 12,
-
-    INCLINOMETER = 0,
+    PINGL_ECHO = 8,
+    PINGL_TRIG = 7,
 
     SALINITY_SENSOR = 14,
 
@@ -65,7 +66,9 @@ namespace RobotState {
 
         LEFT_COLL = 1 << 8,                
         RIGHT_COLL = 1 << 9,              
-        FRONT_COLL = 1 << 10,   
+        FRONT_COLL = 1 << 10,  
+
+        CHOMPER_ON = 1 << 11, 
     };
  
     constexpr int ENABLE_MOTORS_MASK = MOTOR_FL_ON | MOTOR_FR_ON | MOTOR_BL_ON | MOTOR_BR_ON;
@@ -82,10 +85,11 @@ enum MotorEnum {
 };
 
 namespace Speeds {
-    const int LEFT_FORWARD = 114;
+     int LEFT_FORWARD = 115; // 107
+     int RIGHT_FORWARD = 75; // 81
+
     const int LEFT_REVERSE = 75;
-    const int RIGHT_FORWARD = 75;
-    const int RIGHT_REVERSE = 114;
+    const int RIGHT_REVERSE = 115;
 };
 
 #endif
