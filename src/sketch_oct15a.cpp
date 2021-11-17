@@ -53,6 +53,18 @@ bool motor_loop(void *)
 {
     motor_state = MS_STATIONARY;
 
+    // if (distanceR < 10 && distanceR > 0) {
+    //     requested_motor_state = MS_TURN_LEFT;
+    // } else if (distanceR > 10 && distanceR < 40) {
+    //      requested_motor_state = MS_FORWARD;
+    // }
+
+    // if (distanceL < 10 && distanceL > 0) {
+    //     requested_motor_state = MS_TURN_RIGHT;
+    // } else if (distanceR > 10 && distanceR < 40) {
+    //      requested_motor_state = MS_FORWARD;
+    // }
+
     switch (requested_motor_state)
     {
     case -1:
@@ -100,7 +112,7 @@ bool motor_loop(void *)
 
 
 
-bool ping(int trig, int echo, int coll_flag, float collision_threshold, float& distance, int on_event, int off_event)
+float ping(int trig, int echo, int coll_flag, float collision_threshold, float& distance, int on_event, int off_event)
 {
     static const int PING_BUFFER = 5;
     static float buffer[PING_BUFFER];
@@ -115,6 +127,7 @@ bool ping(int trig, int echo, int coll_flag, float collision_threshold, float& d
         else robot_state &= ~coll_flag;
         fire_event((robot_state & coll_flag) ? on_event : off_event);
     }
+    return distance;
 }
 
 // Loop that controls the ping sensors. Only 1 ping sensor is updated every tick.
@@ -127,15 +140,15 @@ bool ping_loop(void *)
     switch (next)
     {
         case 0:
-            ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO, RobotState::FRONT_COLL, DEFAULT_COLLISION_THRESHOLD, distanceF, 
+            distanceF = ping(Pins::PINGF_TRIG, Pins::PINGF_ECHO, RobotState::FRONT_COLL, DEFAULT_COLLISION_THRESHOLD, distanceF, 
                 Events::FRONT_COLLISION, Events::NO_FRONT_COLLISION);
             break;
         case 1:
-            ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO, RobotState::LEFT_COLL, LEFT_COLLISION_THRESHOLD, distanceL, 
+            distanceL = ping(Pins::PINGL_TRIG, Pins::PINGL_ECHO, RobotState::LEFT_COLL, LEFT_COLLISION_THRESHOLD, distanceL, 
                 Events::LEFT_COLLISION, Events::NO_LEFT_COLLISION);
             break;
         case 2:
-            ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO, RobotState::RIGHT_COLL, RIGHT_COLLISION_THRESHOLD, distanceR, 
+            distanceR = ping(Pins::PINGR_TRIG, Pins::PINGR_ECHO, RobotState::RIGHT_COLL, RIGHT_COLLISION_THRESHOLD, distanceR, 
                 Events::RIGHT_COLLISION, Events::NO_RIGHT_COLLISION);
             break;
     }

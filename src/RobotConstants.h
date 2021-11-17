@@ -1,11 +1,11 @@
 #ifndef ROBOT_CONSTANTS_H
 #define ROBOT_CONSTANTS_H
 
-#define DEFAULT_COLLISION_THRESHOLD 30.0
+#define DEFAULT_COLLISION_THRESHOLD 20.0
 #define LEFT_COLLISION_THRESHOLD 40.0
 #define RIGHT_COLLISION_THRESHOLD 40.0
-#define DEFAULT_TURN_LEFT_DURATION 765
-#define DEFAULT_TURN_RIGHT_DURTION 785
+#define DEFAULT_TURN_LEFT_DURATION 870 //765
+#define DEFAULT_TURN_RIGHT_DURTION 700 //765
 
 namespace Pins {
   enum {    
@@ -86,8 +86,8 @@ enum MotorEnum {
 namespace Speeds {
     const int LEFT_FORWARD = 115;
     const int LEFT_REVERSE = 75;
-    const int RIGHT_FORWARD = 75;
-    const int RIGHT_REVERSE = 114;
+    const int RIGHT_FORWARD = 70; //75 //72
+    const int RIGHT_REVERSE = 114; //115 //114
 };
 
 #endif

@@ -4,12 +4,14 @@
 #include "RobotUtil.h"
 
 extern int requested_motor_state;
+extern float distanceR;
 
+namespace Actions
+{
+    using ActionFunction = void (*)();
 
-namespace Actions {
-    using ActionFunction = void(*)();
-
-    enum: int {
+    enum : int
+    {
         DONT_MOVE = 0,
         MOVE_F,
         MOVE_R,
@@ -29,6 +31,7 @@ namespace Actions {
     ActionFunction FunctionTable[MAX_ACTIONS] = {
         &dont_move,
         &move_f,
+        &move_fw,
         &move_r,
         &turn_l,
         &turn_r,
@@ -37,13 +40,12 @@ namespace Actions {
 
 };
 
-
-struct Action {
+struct Action
+{
     int action;
     int endEvent;
     unsigned long duration;
-    Action(int action, int endEvent = Events::NONE, unsigned long duration = 0): action(action), endEvent(endEvent), duration(duration) {}
+    Action(int action, int endEvent = Events::NONE, unsigned long duration = 0) : action(action), endEvent(endEvent), duration(duration) {}
 };
-
 
 #endif
